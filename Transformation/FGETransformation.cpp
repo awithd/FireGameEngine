@@ -93,6 +93,13 @@ void FGETransformation::appendLocalVectorTranslation(float x, float y, float z){
     this->local_translation += glm::vec3(x, y, z);
     __calculateLocalTransformation();
 }
+
+void FGETransformation::setLocalVectorTranslation(glm::vec4 vector){
+    this->local_translation = vector;
+}
+void FGETransformation::setLocalVectorTranslation(glm::vec3 vector){
+    this->local_translation = vector;
+}
 void FGETransformation::setLocalVectorTranslation(float x, float y, float z){
     this->local_translation = glm::vec3(x, y, z);
 }

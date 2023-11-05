@@ -130,14 +130,10 @@ void FGECameraPainter::init(OpenGLFunctions *f)
 
 void FGECameraPainter::draw(OpenGLFunctions *f, glm::mat4 &pvm, FGEDataCamera *camera)
 {
-    glm::vec3 _position = glm::vec3(0, 0, 0);
-    if(camera->view->relative_position!=NULL){
-        glm::vec4 _pos = glm::vec4(0, 0, 0, 1)*camera->view->relative_position->getGlobalTransformation();
-        _position = glm::vec3(_pos.x, _pos.y, _pos.z);
-    }else{
-        _position = camera->view->position;
-    }
-    glm::vec3 d = glm::normalize(camera->view->tarjet-_position);
+    glm::vec3 _position = camera->view->getGlobalPosition();
+    glm::vec3 _tarjet = camera->view->getGlobalTarjet();
+    glm::vec3 d = glm::normalize(_tarjet-_position);
+    glm::vec3 _up = camera->view->getGlobalUp();
 
     glm::vec3 nc = _position + d * (camera->projection->perspective.near+8);
     //glm::vec3 fc = camera->m_viewData->position + d * camera->m_projectionData->perspective.far;
@@ -148,27 +144,27 @@ void FGECameraPainter::draw(OpenGLFunctions *f, glm::mat4 &pvm, FGEDataCamera *c
     /*float Hfar = 2 * tan(camera->m_projectionData->perspective.fovy / 2) * camera->m_projectionData->perspective.far;
     float Wfar = Hfar * camera->m_projectionData->perspective.aspect;
 */
-    glm::vec3 right= glm::cross(d, camera->view->up);
+    glm::vec3 right= glm::cross(d, _up);
 
 
     float hnd = Hnear/2;
     float wnd = Wnear/2;
-    ntl = nc + (camera->view->up * hnd) - (right * wnd);
+    ntl = nc + (_up * hnd) - (right * wnd);
     pos_nf[0] = ntl[0];
     pos_nf[1] = ntl[1];
     pos_nf[2] = ntl[2];
 
-    ntr = nc + (camera->view->up * hnd) + (right * wnd);
+    ntr = nc + (_up * hnd) + (right * wnd);
     pos_nf[3] = ntr[0];
     pos_nf[4] = ntr[1];
     pos_nf[5] = ntr[2];
 
-    nbr = nc - (camera->view->up * hnd) + (right * wnd);
+    nbr = nc - (_up * hnd) + (right * wnd);
     pos_nf[6] = nbr[0];
     pos_nf[7] = nbr[1];
     pos_nf[8] = nbr[2];
 
-    nbl = nc - (camera->view->up * hnd) - (right * wnd);
+    nbl = nc - (_up * hnd) - (right * wnd);
     pos_nf[9] = nbl[0];
     pos_nf[10] = nbl[1];
     pos_nf[11] = nbl[2];
@@ -254,14 +250,11 @@ void FGECameraPainter::draw(OpenGLFunctions *f, glm::mat4 &pvm, FGEDataCamera *c
 
 void FGECameraPainter::drawForSelection(OpenGLFunctions *f, glm::mat4 &pvm, FGEDataCamera *camera, glm::vec3 &color)
 {
-    glm::vec3 _position = glm::vec3(0, 0, 0);
-    if(camera->view->relative_position!=NULL){
-        glm::vec4 _pos = glm::vec4(0, 0, 0, 1)*camera->view->relative_position->getGlobalTransformation();
-        _position = glm::vec3(_pos.x, _pos.y, _pos.z);
-    }else{
-        _position = camera->view->position;
-    }
-    glm::vec3 d = glm::normalize(camera->view->tarjet-_position);
+    glm::vec3 _position = camera->view->getGlobalPosition();
+    glm::vec3 _tarjet = camera->view->getGlobalTarjet();
+    glm::vec3 d = glm::normalize(_tarjet-_position);
+    glm::vec3 _up = camera->view->getGlobalUp();
+
 
     glm::vec3 nc = _position + d * (camera->projection->perspective.near+8);
     //glm::vec3 fc = camera->m_viewData->position + d * camera->m_projectionData->perspective.far;
@@ -272,27 +265,27 @@ void FGECameraPainter::drawForSelection(OpenGLFunctions *f, glm::mat4 &pvm, FGED
     /*float Hfar = 2 * tan(camera->m_projectionData->perspective.fovy / 2) * camera->m_projectionData->perspective.far;
     float Wfar = Hfar * camera->m_projectionData->perspective.aspect;
 */
-    glm::vec3 right= glm::cross(d, camera->view->up);
+    glm::vec3 right= glm::cross(d, _up);
 
 
     float hnd = Hnear/2;
     float wnd = Wnear/2;
-    ntl = nc + (camera->view->up * hnd) - (right * wnd);
+    ntl = nc + (_up * hnd) - (right * wnd);
     pos_nf[0] = ntl[0];
     pos_nf[1] = ntl[1];
     pos_nf[2] = ntl[2];
 
-    ntr = nc + (camera->view->up * hnd) + (right * wnd);
+    ntr = nc + (_up * hnd) + (right * wnd);
     pos_nf[3] = ntr[0];
     pos_nf[4] = ntr[1];
     pos_nf[5] = ntr[2];
 
-    nbr = nc - (camera->view->up * hnd) + (right * wnd);
+    nbr = nc - (_up * hnd) + (right * wnd);
     pos_nf[6] = nbr[0];
     pos_nf[7] = nbr[1];
     pos_nf[8] = nbr[2];
 
-    nbl = nc - (camera->view->up * hnd) - (right * wnd);
+    nbl = nc - (_up * hnd) - (right * wnd);
     pos_nf[9] = nbl[0];
     pos_nf[10] = nbl[1];
     pos_nf[11] = nbl[2];

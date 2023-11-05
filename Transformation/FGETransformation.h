@@ -47,6 +47,8 @@ public:
     void setLocalYVectorTranslation(float y);
     void setLocalZVectorTranslation(float z);
     void setLocalVectorTranslation(float x, float y, float z);
+    void setLocalVectorTranslation(glm::vec4 vector);
+    void setLocalVectorTranslation(glm::vec3 vector);
     glm::vec3 getLocalVectorTranslation();
 
     void setLocalXVectorRotation(float x);

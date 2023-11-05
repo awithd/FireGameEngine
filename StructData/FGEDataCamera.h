@@ -61,6 +61,30 @@ public:
     FGETransformation *relative_position;
     FGETransformation *relative_up;
 
+    glm::vec3 getGlobalPosition(){
+        if(relative_position!=NULL){
+            return glm::vec4(0,0,0,1)*relative_position->getGlobalTransformation();
+        }else{
+            return glm::vec3(0,0,0);
+        }
+    }
+    glm::vec3 getGlobalTarjet(){
+        if(relative_position!=NULL){
+            return glm::vec4(this->tarjet.x, this->tarjet.y, this->tarjet.z, 1)
+                    * this->position->getGlobalTransformation();
+
+        }else{
+            return tarjet;
+        }
+    }
+    glm::vec3 getGlobalUp(){
+        if(relative_position!=NULL){
+            return glm::vec4(this->up.x, this->up.y, this->up.z, 1)
+                    * this->position->getGlobalTransformation();
+        }else{
+            return up;
+        }
+    }
 
     FGETransformation *position;
     glm::vec3 tarjet;
@@ -94,7 +118,7 @@ public:
         this->view->tarjet = glm::vec3(0.0f, 0.0f, -1.0f);
         this->view->up = glm::vec3(0.0f, 1.0f, 0.0f);
 
-        glm::vec3 position = this->view->position->getVector3GlobalTransformation();
+        glm::vec3 position = this->view->getGlobalPosition();
         glm::vec3 tarjet = glm::vec4(this->view->tarjet.x, this->view->tarjet.y, this->view->tarjet.z, 1)*
                  this->view->position->getGlobalTransformation();
         glm::vec3 up = glm::vec4(this->view->up.x, this->view->up.y, this->view->up.z, 1)
