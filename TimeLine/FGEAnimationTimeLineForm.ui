@@ -1,0 +1,845 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FGEAnimationTimeLineForm</class>
+ <widget class="QWidget" name="FGEAnimationTimeLineForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>657</width>
+    <height>352</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="layoutDirection">
+   <enum>Qt::LeftToRight</enum>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_5">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QWidget" name="AnimationListWidget" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">.QWidget#AnimationListWidget{
+	border : 0px solid;
+	border-color : black;
+	border-radius : 3px;
+	background-color: rgb(0, 0, 0);
+}
+#BodyWidget{
+	background-color:  rgb(97, 98, 96);
+	border-radius : 4px;
+	border : 0px solid  rgb(220, 220, 220);
+}
+</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_9">
+      <property name="leftMargin">
+       <number>2</number>
+      </property>
+      <property name="topMargin">
+       <number>2</number>
+      </property>
+      <property name="rightMargin">
+       <number>2</number>
+      </property>
+      <property name="bottomMargin">
+       <number>2</number>
+      </property>
+      <property name="spacing">
+       <number>2</number>
+      </property>
+      <item row="1" column="0">
+       <widget class="QWidget" name="BodyWidget" native="true">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_8">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <item row="0" column="0">
+          <layout class="QGridLayout" name="gridLayout_4">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QSplitter" name="ABSplitter">
+             <property name="styleSheet">
+              <string notr="true">.QSplitter#ABSplitter{
+	background-color: rgb(255, 131, 48);
+}
+</string>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="handleWidth">
+              <number>1</number>
+             </property>
+             <widget class="QWidget" name="TreeWidgetAnimationsWidget" native="true">
+              <property name="styleSheet">
+               <string notr="true">.QWidget#TreeWidgetAnimationsWidget{
+	background-color: rgb(255, 131, 48);
+	border-radius : 6px;
+}</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_2">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <item row="1" column="0">
+                <widget class="FGEAnimationTreeView" name="AnimationsTreeWidget">
+                 <property name="styleSheet">
+                  <string notr="true">#AnimationsTreeWidget{
+    show-decoration-selected: 1;
+     border: 0px solid #d9d9d9;
+	background-color: rgb(255, 255, 255);
+	color: rgb(53, 53, 53);
+}</string>
+                 </property>
+                 <property name="lineWidth">
+                  <number>0</number>
+                 </property>
+                 <property name="verticalScrollBarPolicy">
+                  <enum>Qt::ScrollBarAlwaysOff</enum>
+                 </property>
+                 <property name="horizontalScrollBarPolicy">
+                  <enum>Qt::ScrollBarAsNeeded</enum>
+                 </property>
+                 <property name="autoScroll">
+                  <bool>true</bool>
+                 </property>
+                 <property name="autoScrollMargin">
+                  <number>16</number>
+                 </property>
+                 <property name="verticalScrollMode">
+                  <enum>QAbstractItemView::ScrollPerItem</enum>
+                 </property>
+                 <property name="rootIsDecorated">
+                  <bool>true</bool>
+                 </property>
+                 <property name="headerHidden">
+                  <bool>false</bool>
+                 </property>
+                 <attribute name="headerVisible">
+                  <bool>true</bool>
+                 </attribute>
+                 <attribute name="headerStretchLastSection">
+                  <bool>true</bool>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>Animations</string>
+                  </property>
+                  <property name="background">
+                   <color>
+                    <red>97</red>
+                    <green>98</green>
+                    <blue>96</blue>
+                   </color>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Tools</string>
+                  </property>
+                  <property name="background">
+                   <color>
+                    <red>97</red>
+                    <green>98</green>
+                    <blue>96</blue>
+                   </color>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="layoutWidget">
+              <layout class="QGridLayout" name="gridLayout">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <item row="0" column="0">
+                <widget class="FGEResizingView" name="graphicsView">
+                 <property name="styleSheet">
+                  <string notr="true">#graphicsView{
+	show-decoration-selected: 1;
+	border: 0px solid #d9d9d9;
+	background-color: rgb(255, 255, 255);
+	color: rgb(53, 53, 53);
+}</string>
+                 </property>
+                 <property name="lineWidth">
+                  <number>0</number>
+                 </property>
+                 <property name="verticalScrollBarPolicy">
+                  <enum>Qt::ScrollBarAsNeeded</enum>
+                 </property>
+                 <property name="horizontalScrollBarPolicy">
+                  <enum>Qt::ScrollBarAsNeeded</enum>
+                 </property>
+                 <property name="sizeAdjustPolicy">
+                  <enum>QAbstractScrollArea::AdjustToContents</enum>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="0" column="1">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QWidget" name="widget_2" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>1</horstretch>
+               <verstretch>40</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>4</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>4</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgba(89, 255, 244, 0);</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QScrollBar" name="AnimationListVerticalScrollBar">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QWidget" name="ToolsTimeLineWidgetS" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>28</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>28</height>
+         </size>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <widget class="QWidget" name="widget_3" native="true">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>200</width>
+           <height>28</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">#widget_3 {
+      background-color: white;
+  }
+QMenuBar {
+	  color: rgb(0, 0, 0);
+      background-color: white;
+      margin: 0px; /* some spacing around the menu */
+      spacing: 3px; /* spacing between menu bar items */
+      min-height: 28px; 
+}
+</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="SelectAnimPushButton">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>200</x>
+           <y>0</y>
+           <width>28</width>
+           <height>28</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>28</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>28</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">.QPushButton{
+    border-image: url(&quot;:/Icons/select.png&quot;);
+    background-repeat: no-repeat;
+	background-color: rgb(40, 120, 240);
+
+	border : 0px solid;
+	background-color: rgb(40, 120, 240);
+}
+.QPushButton::hover{
+	background-color: rgb(133, 28, 147);
+}</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../icons.qrc">
+           <normaloff>:/Icons/svg/material_display_mode2.svg</normaloff>:/Icons/svg/material_display_mode2.svg</iconset>
+         </property>
+        </widget>
+        <widget class="QWidget" name="widget" native="true">
+         <property name="geometry">
+          <rect>
+           <x>228</x>
+           <y>0</y>
+           <width>110</width>
+           <height>28</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>84</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>110</width>
+           <height>28</height>
+          </size>
+         </property>
+         <widget class="QPushButton" name="PrevPushButton">
+          <property name="geometry">
+           <rect>
+            <x>56</x>
+            <y>0</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>28</width>
+            <height>28</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>28</width>
+            <height>28</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">.QPushButton{
+    border : 0px solid;
+	background-color: rgb(40, 120, 240);
+}
+.QPushButton::hover{
+	background-color: rgb(133, 28, 147);
+}</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../icons.qrc">
+            <normaloff>:/Icons/blender_icons/play_reverse.svg</normaloff>:/Icons/blender_icons/play_reverse.svg</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>18</width>
+            <height>18</height>
+           </size>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="PlayPausePushButton">
+          <property name="geometry">
+           <rect>
+            <x>28</x>
+            <y>0</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>28</width>
+            <height>28</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>28</width>
+            <height>28</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">.QPushButton{
+	border : 0px solid;
+	background-color: rgb(40, 120, 240);
+}
+.QPushButton::hover{
+	background-color: rgb(133, 28, 147);
+}</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../icons.qrc">
+            <normaloff>:/Icons/blender_icons/play.svg</normaloff>:/Icons/blender_icons/play.svg</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>18</width>
+            <height>18</height>
+           </size>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="ResetPushButton">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>28</width>
+            <height>28</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>28</width>
+            <height>28</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">.QPushButton{
+	border : 0px solid;
+	background-color: rgb(40, 120, 240);
+}
+.QPushButton::hover{
+	background-color: rgb(133, 28, 147);
+}</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../icons.qrc">
+            <normaloff>:/Icons/blender_icons/action_tweak.svg</normaloff>:/Icons/blender_icons/action_tweak.svg</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>18</width>
+            <height>18</height>
+           </size>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QPushButton" name="add_keyframe_PushButton">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>312</x>
+           <y>0</y>
+           <width>28</width>
+           <height>28</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>28</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>28</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">.QPushButton{
+	border : 0px solid;
+	background-color: rgb(40, 120, 240);
+}
+.QPushButton::hover{
+	background-color: rgb(133, 28, 147);
+}</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../icons.qrc">
+           <normaloff>:/Icons/blender_icons/keyframe_hlt.svg</normaloff>:/Icons/blender_icons/keyframe_hlt.svg</iconset>
+         </property>
+        </widget>
+        <widget class="FGEDoubleSpinBox" name="BeginFrameDoubleSpinBox">
+         <property name="geometry">
+          <rect>
+           <x>342</x>
+           <y>0</y>
+           <width>100</width>
+           <height>28</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">.QDoubleSpinBox {
+	border: 0 solid rgb(170, 170, 119);
+	background-color: rgb(236, 236, 236);
+	height : 28px;
+	border-radius: 0px;
+	padding : 0px;
+	margin : 0px 0px 0px 0px;
+}
+
+.QDoubleSpinBox::up-button  {
+	subcontrol-origin: margin;
+	subcontrol-position: center right;
+	background-color: rgb(170, 170, 119);
+	border-width: 1px;
+	height : 24px;
+	width : 20px;
+	padding : 0px;
+	border-bottom-right-radius: 2px;
+	border-top-right-radius: 2px;
+	margin-right : 1px;
+	image: url(:/Icons/svg/up_white.svg);
+}
+
+.QDoubleSpinBox::up-arrow  {
+}
+
+.QDoubleSpinBox::up-button:pressed  {
+}
+
+.QDoubleSpinBox::down-button  {
+	subcontrol-origin: margin;
+	subcontrol-position: center left;
+	border-width: 1px;
+	background-color: rgb(170, 170, 127);
+	height : 24px;
+	width : 20px;
+	padding : 0px;
+	border-bottom-left-radius: 2px;
+	border-top-left-radius: 2px;
+	margin-left : 1px;
+	image: url(:/Icons/svg/down_white.svg);
+}
+
+.QDoubleSpinBox::down-arrow  {
+	
+}
+
+.QDoubleSpinBox::down-button:pressed  {
+}
+</string>
+         </property>
+         <property name="decimals">
+          <number>0</number>
+         </property>
+        </widget>
+        <widget class="FGEDoubleSpinBox" name="EndFrameDoubleSpinBox">
+         <property name="geometry">
+          <rect>
+           <x>443</x>
+           <y>0</y>
+           <width>100</width>
+           <height>28</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">.QDoubleSpinBox {
+	border: 0 solid rgb(170, 170, 119);
+	background-color: rgb(236, 236, 236);
+	height : 28px;
+	border-radius: 0px;
+	padding : 0px;
+	margin : 0px 0px 0px 0px;
+}
+
+.QDoubleSpinBox::up-button  {
+	subcontrol-origin: margin;
+	subcontrol-position: center right;
+	background-color: rgb(170, 170, 119);
+	border-width: 1px;
+	height : 24px;
+	width : 20px;
+	padding : 0px;
+	border-bottom-right-radius: 2px;
+	border-top-right-radius: 2px;
+	margin-right : 1px;
+	image: url(:/Icons/svg/up_white.svg);
+}
+
+.QDoubleSpinBox::up-arrow  {
+}
+
+.QDoubleSpinBox::up-button:pressed  {
+}
+
+.QDoubleSpinBox::down-button  {
+	subcontrol-origin: margin;
+	subcontrol-position: center left;
+	border-width: 1px;
+	background-color: rgb(170, 170, 127);
+	height : 24px;
+	width : 20px;
+	padding : 0px;
+	border-bottom-left-radius: 2px;
+	border-top-left-radius: 2px;
+	margin-left : 1px;
+	image: url(:/Icons/svg/down_white.svg);
+}
+
+.QDoubleSpinBox::down-arrow  {
+	
+}
+
+.QDoubleSpinBox::down-button:pressed  {
+}
+</string>
+         </property>
+         <property name="decimals">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <double>1000000000.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>19.000000000000000</double>
+         </property>
+        </widget>
+        <widget class="QSlider" name="horizontalSlider">
+         <property name="geometry">
+          <rect>
+           <x>551</x>
+           <y>0</y>
+           <width>100</width>
+           <height>28</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QSlider::groove:horizontal {
+    border: 1px solid rgb(200, 200, 200);
+    height: 3px; 
+	background-color: rgb(200, 200, 200);
+    margin: 2px 0;
+	border-radius : 2px;
+}
+
+QSlider::handle:horizontal {
+	background-color: rgb(100, 100, 100);
+    border: 1px solid rgb(100, 100, 100);
+    width: 10px;
+	border-radius : 6px;
+    margin: -5px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+}
+QSlider::sub-page:horizontal {
+	height: 3px; 
+	background-color: rgb(100, 100, 100);
+    margin: 2px 0;
+	border-radius : 2px;
+}</string>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FGEResizingView</class>
+   <extends>QGraphicsView</extends>
+   <header>TimeLine/FGEResizingView.h</header>
+  </customwidget>
+  <customwidget>
+   <class>FGEAnimationTreeView</class>
+   <extends>QTreeWidget</extends>
+   <header location="global">TimeLine/FGEAnimationTreeView.h</header>
+  </customwidget>
+  <customwidget>
+   <class>FGEDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>GUI/PushButton/FGEDoubleSpinBox.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../icons.qrc"/>
+ </resources>
+ <connections/>
+</ui>

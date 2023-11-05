@@ -1,0 +1,43 @@
+#ifndef FGEGIZMOSDEFINITION_H
+#define FGEGIZMOSDEFINITION_H
+
+
+#define FGE_TRANSFORMATION_TYPE_GLOBAL  0
+#define FGE_TRANSFORMATION_TYPE_LOCAL   1
+#define FGE_TRANSFORMATION_TYPE_SCREEN  2
+#define FGE_TRANSFORMATION_TYPE_SNAP    3
+
+
+#define FGE_GIZMO_NON               0
+
+#define FGE_GIZMO_TRANSLATION_X     1
+#define FGE_GIZMO_TRANSLATION_Y     2
+#define FGE_GIZMO_TRANSLATION_Z     3
+#define FGE_GIZMO_TRANSLATION_XY    4
+#define FGE_GIZMO_TRANSLATION_YZ    5
+#define FGE_GIZMO_TRANSLATION_XZ    6
+#define FGE_GIZMO_TRANSLATION_XYZ   7
+
+#define FGE_GIZMO_ROTATION_X        8
+#define FGE_GIZMO_ROTATION_Y        9
+#define FGE_GIZMO_ROTATION_Z        10
+#define FGE_GIZMO_ROTATION_XY       11
+#define FGE_GIZMO_ROTATION_YZ       12
+#define FGE_GIZMO_ROTATION_XZ       13
+#define FGE_GIZMO_ROTATION_XYZ      14
+
+#define FGE_GIZMO_SCALE_X           15
+#define FGE_GIZMO_SCALE_Y           16
+#define FGE_GIZMO_SCALE_Z           17
+#define FGE_GIZMO_SCALE_XY          18
+#define FGE_GIZMO_SCALE_YZ          19
+#define FGE_GIZMO_SCALE_XZ          20
+#define FGE_GIZMO_SCALE_XYZ         21
+
+class FGEGizmosDefinition
+{
+public:
+    FGEGizmosDefinition();
+};
+
+#endif // FGEGIZMOSDEFINITION_H
