@@ -144,6 +144,7 @@ bool FGEArmaturePose::gizmoMoveMouse(OpenGLFunctions *f, glm::mat4 &pm, glm::mat
                             if(b_r!=0 && !qIsNaN(b_r)){
                                 glm::quat _qt = glm::angleAxis( glm::radians(b_r), glm::vec3(axe[0], axe[1], axe[2]));
                                 par->trans_pose->appendLocalQuaternion(_qt);
+                                par->trans_pose->updateLocalCalculation();
                             }
                         }
                         return true;

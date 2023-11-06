@@ -37,7 +37,7 @@ void FGEArmatureDevice::paintBone(OpenGLFunctions *f, glm::mat4 &pvm,
         }
 
         //qDebug()<< " ////mmmmmmm//// :";
-        //painter->bone->_setShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/");
+        //painter->bone->_setShader(f, "/home/corolo/Qt/FireGameEngine/Shader/");
         //painter->bone->_setBuffer(f);
         painter->bone->_setWireWidth(1.0);
 

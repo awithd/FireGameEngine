@@ -62,12 +62,12 @@ void FGEItemCreateNewObject::init(OpenGLFunctions *f, glm::vec3 &first_pos, glm:
         this->shader = new FGEGLSL();
         this->shader->clearAttribLocation();
         this->shader->appendAttribLocation(0, "vertex");
-        this->shaderProgram_plane = this->shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/CreateObjects/plane.vert", "/home/corolo/Qt/FireGameEngine22/Shader/CreateObjects/plane.frag");
+        this->shaderProgram_plane = this->shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/CreateObjects/plane.vert", "/home/corolo/Qt/FireGameEngine/Shader/CreateObjects/plane.frag");
         //qDebug()<<"o4";
 
         shader->clearAttribLocation();
         shader->appendAttribLocation(0, "vertex");
-        shaderProgram_line = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/TranslationShader/GizmosTranslationLine.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/TranslationShader/GizmosTranslationLine.frag");
+        shaderProgram_line = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/TranslationShader/GizmosTranslationLine.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/TranslationShader/GizmosTranslationLine.frag");
 
         /*this->shader->clearAttribLocation();
         this->shader->appendAttribLocation(0, "vertex");

@@ -19,10 +19,10 @@ void FGEGrid::init(OpenGLFunctions *_f, FGEGLSL *shader, int axe)
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    this->grid.shader_program = shader->initShader(_f, "/home/corolo/Qt/FireGameEngine22/Shader/Grid/vertex.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Grid/fragment.frag");
+    this->grid.shader_program = shader->initShader(_f, "/home/corolo/Qt/FireGameEngine/Shader/Grid/vertex.vert", "/home/corolo/Qt/FireGameEngine/Shader/Grid/fragment.frag");
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    this->grid.shader_program_axe = shader->initShader(_f, "/home/corolo/Qt/FireGameEngine22/Shader/Grid/Axe.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Grid/Axe.frag");
+    this->grid.shader_program_axe = shader->initShader(_f, "/home/corolo/Qt/FireGameEngine/Shader/Grid/Axe.vert", "/home/corolo/Qt/FireGameEngine/Shader/Grid/Axe.frag");
 
     // X Axe
 

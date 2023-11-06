@@ -345,7 +345,7 @@ void FGEPrepareGLBuffer::initGlobalBufferBone(OpenGLFunctions *f, FGEBoneBuffer 
             if(bone_buffer->shader_program==0){
                 shader->clearAttribLocation();
                 shader->appendAttribLocation(0, "VERTEX");
-                bone_buffer->shader_program = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Bone/bone.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Bone/bone.frag");
+                bone_buffer->shader_program = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Bone/bone.vert", "/home/corolo/Qt/FireGameEngine/Shader/Bone/bone.frag");
             }
         }
 

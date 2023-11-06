@@ -7,7 +7,7 @@ FGESculptMesh::FGESculptMesh(OpenGLFunctions *f)
     this->shader = new FGEGLSL();
     this->shader->clearAttribLocation();
     this->shader->appendAttribLocation(0, "vertex");
-    this->shaderProgram = this->shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Sculpt/GizmoSculpt.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Sculpt/GizmoSculpt.frag");
+    this->shaderProgram = this->shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Sculpt/GizmoSculpt.vert", "/home/corolo/Qt/FireGameEngine/Shader/Sculpt/GizmoSculpt.frag");
 }
 
 void FGESculptMesh::draw(OpenGLFunctions *f, glm::mat4 &view, glm::mat4 &projection, glm::mat4 &model)

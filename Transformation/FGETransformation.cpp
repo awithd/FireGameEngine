@@ -145,7 +145,7 @@ void FGETransformation::appendLocalQuaternion(glm::quat &qtr){
     this->local_quaternion = this->local_quaternion*qtr;
 
     //this->local_quaternion = this->quaternionMultiplication(this->local_quaternion, qtr);
-    __calculateLocalTransformation();
+    //__calculateLocalTransformation();
 }
 glm::quat FGETransformation::getLocalQuaternion(){
     return this->local_quaternion;

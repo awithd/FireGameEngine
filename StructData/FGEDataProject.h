@@ -77,7 +77,7 @@ public:
     FGEDataProject(){
         this->shader = new FGEGLSL();
 
-        this->path_shader_programe = "/home/corolo/Qt/FireGameEngine22/Shader";
+        this->path_shader_programe = "/home/corolo/Qt/FireGameEngine/Shader";
 
         this->current_color_selection = 1;
         this->current_sculpt_item = NULL;

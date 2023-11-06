@@ -61,7 +61,7 @@ void MainWindow::on_action_open_dae_file_triggered()
     if (fileName.isEmpty())
             return;
     else {
-        //QString fileName = "/home/corolo/Qt/FireGameEngine22/Models/DAEFiles/ht/Catwalk Walk Forward HighKnees1.dae";
+        //QString fileName = "/home/corolo/Qt/FireGameEngine/Models/DAEFiles/ht/Catwalk Walk Forward HighKnees1.dae";
         QFileInfo fileInfo(fileName);
         if(fileInfo.isFile()){
             if(fileInfo.completeSuffix()=="dae"){

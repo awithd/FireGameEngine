@@ -20,7 +20,7 @@ void FGESquareGrid::init(OpenGLFunctions *fgl, FGEGLSL *shader, int axe)
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    this->shader_program = shader->initShader(fgl, "/home/corolo/Qt/FireGameEngine22/Shader/Grid/SquareGrid.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Grid/SquareGrid.frag");
+    this->shader_program = shader->initShader(fgl, "/home/corolo/Qt/FireGameEngine/Shader/Grid/SquareGrid.vert", "/home/corolo/Qt/FireGameEngine/Shader/Grid/SquareGrid.frag");
 
     // X Axe
 

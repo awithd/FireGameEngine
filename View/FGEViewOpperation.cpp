@@ -132,21 +132,21 @@ void FGEViewOpperation::initShader(OpenGLFunctions *f)
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
     shader->appendAttribLocation(1, "color");
-    shaderProgram_a = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Viewer/VertexShaderLineViwer.sh", "/home/corolo/Qt/FireGameEngine22/Shader/Viewer/FragmentShaderLineViwer.sh");
+    shaderProgram_a = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Viewer/VertexShaderLineViwer.sh", "/home/corolo/Qt/FireGameEngine/Shader/Viewer/FragmentShaderLineViwer.sh");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
     shader->appendAttribLocation(2, "normal");
-    shaderProgram_b = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Viewer/VertexShaderBallViwer.sh", "/home/corolo/Qt/FireGameEngine22/Shader/Viewer/FragmentShaderBallViwer.sh");
+    shaderProgram_b = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Viewer/VertexShaderBallViwer.sh", "/home/corolo/Qt/FireGameEngine/Shader/Viewer/FragmentShaderBallViwer.sh");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    shaderProgram_area = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Viewer/VertexShaderAreaViwer.sh", "/home/corolo/Qt/FireGameEngine22/Shader/Viewer/FragmentShaderAreaViwer.sh");
+    shaderProgram_area = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Viewer/VertexShaderAreaViwer.sh", "/home/corolo/Qt/FireGameEngine/Shader/Viewer/FragmentShaderAreaViwer.sh");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
     shader->appendAttribLocation(2, "normal");
-    shaderProgram_b_selection = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Viewer/SelectAxeViwer.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Viewer/SelectAxeViwer.frag");
+    shaderProgram_b_selection = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Viewer/SelectAxeViwer.vert", "/home/corolo/Qt/FireGameEngine/Shader/Viewer/SelectAxeViwer.frag");
 
 }
 

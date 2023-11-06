@@ -35,7 +35,7 @@ void FGECreateNewObject::init(OpenGLFunctions *f)
         this->shader = new FGEGLSL();
         this->shader->clearAttribLocation();
         this->shader->appendAttribLocation(0, "vertex");
-        this->shaderProgram_plane = this->shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/CreateObjects/plane.vert", "/home/corolo/Qt/FireGameEngine22/Shader/CreateObjects/plane.frag");
+        this->shaderProgram_plane = this->shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/CreateObjects/plane.vert", "/home/corolo/Qt/FireGameEngine/Shader/CreateObjects/plane.frag");
         this->initialized=true;
     }
 }

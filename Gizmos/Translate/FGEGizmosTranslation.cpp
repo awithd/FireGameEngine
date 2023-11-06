@@ -9,27 +9,27 @@ FGEGizmosTranslation::FGEGizmosTranslation(OpenGLFunctions *f, FGESUBSelectedTra
     shader = new FGEGLSL();
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    translation_item->shaderProgram = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/TranslationShader/GizmosTranslationVertexShader.sh", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/TranslationShader/GizmosTranslationFragmentShader.sh");
+    translation_item->shaderProgram = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/TranslationShader/GizmosTranslationVertexShader.sh", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/TranslationShader/GizmosTranslationFragmentShader.sh");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    translation_item->shaderProgram_NO_VIEW = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/TranslationShader/GizmosTranslationNoViewVertexShader.sh", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/TranslationShader/GizmosTranslationFragmentShader.sh");
+    translation_item->shaderProgram_NO_VIEW = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/TranslationShader/GizmosTranslationNoViewVertexShader.sh", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/TranslationShader/GizmosTranslationFragmentShader.sh");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    translation_item->shaderProgram_selection = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/TranslationShader/GizmosTranslationVertexShaderSelection.sh", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/TranslationShader/GizmosTranslationFragmentShaderSelection.sh");
+    translation_item->shaderProgram_selection = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/TranslationShader/GizmosTranslationVertexShaderSelection.sh", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/TranslationShader/GizmosTranslationFragmentShaderSelection.sh");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    translation_item->shaderProgram_line = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/TranslationShader/GizmosTranslationLine.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/TranslationShader/GizmosTranslationLine.frag");
+    translation_item->shaderProgram_line = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/TranslationShader/GizmosTranslationLine.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/TranslationShader/GizmosTranslationLine.frag");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    translation_item->shaderProgram_grid = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/TranslationShader/translation_grid.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/TranslationShader/translation_grid.frag");
+    translation_item->shaderProgram_grid = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/TranslationShader/translation_grid.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/TranslationShader/translation_grid.frag");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    translation_item->shaderProgram_sphere = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/TranslationShader/GizmosPointCenter.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/TranslationShader/GizmosPointCenter.frag");
+    translation_item->shaderProgram_sphere = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/TranslationShader/GizmosPointCenter.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/TranslationShader/GizmosPointCenter.frag");
 
 
     linepoint_1 = glm::vec3(0.0, 0.0, 0.0);

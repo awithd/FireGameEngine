@@ -149,7 +149,7 @@ void FGEOpenGLWidget::initializeGL()
 
     this->shader->clearAttribLocation();
     this->shader->appendAttribLocation(0, "vertex");
-    this->shader_program_selection = shader->initShader(this->f, "/home/corolo/Qt/FireGameEngine22/Shader/Scene/VertexShaderSelection.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Scene/FragmentShaderSelection.frag");
+    this->shader_program_selection = shader->initShader(this->f, "/home/corolo/Qt/FireGameEngine/Shader/Scene/VertexShaderSelection.vert", "/home/corolo/Qt/FireGameEngine/Shader/Scene/FragmentShaderSelection.frag");
 
 
     this->selection_mesh_editable = new FGEEditMeshSelector();
@@ -191,9 +191,9 @@ void FGEOpenGLWidget::initializeGL()
     this->render_tarjet_outline = new FGERenderTarget(this->f, __shader_program, 0, 0, 0.9);
 */
 
-    this->render_tarjet_selection = new FGERenderTarget(this->f, this->shader, 0, 0, 0.0, "/home/corolo/Qt/FireGameEngine22/Shader/Screen/VertexShader.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Screen/FragmentShader.frag");
-    this->render_tarjet = new FGERenderTarget(this->f, this->shader, 0, 0, 0.0, "/home/corolo/Qt/FireGameEngine22/Shader/Screen/VertexShader.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Screen/FragmentShader.frag");
-    this->render_tarjet_outline = new FGERenderTarget(this->f, this->shader, 0, 0, 0.9,  "/home/corolo/Qt/FireGameEngine22/Shader/Screen/OutlinePostprocessing.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Screen/OutlinePostprocessing.frag");
+    this->render_tarjet_selection = new FGERenderTarget(this->f, this->shader, 0, 0, 0.0, "/home/corolo/Qt/FireGameEngine/Shader/Screen/VertexShader.vert", "/home/corolo/Qt/FireGameEngine/Shader/Screen/FragmentShader.frag");
+    this->render_tarjet = new FGERenderTarget(this->f, this->shader, 0, 0, 0.0, "/home/corolo/Qt/FireGameEngine/Shader/Screen/VertexShader.vert", "/home/corolo/Qt/FireGameEngine/Shader/Screen/FragmentShader.frag");
+    this->render_tarjet_outline = new FGERenderTarget(this->f, this->shader, 0, 0, 0.9,  "/home/corolo/Qt/FireGameEngine/Shader/Screen/OutlinePostprocessing.vert", "/home/corolo/Qt/FireGameEngine/Shader/Screen/OutlinePostprocessing.frag");
 
     this->light_tool = new FGELight(this->f);
     this->gizmos = new FGEGizmos(this->f);
@@ -2095,6 +2095,7 @@ bool FGEOpenGLWidget::CCDMode(FGEDataBone* endEffector, FGEDataBone* base, glm::
                     ////////qDebug()<<"------------------  angle : ("<<angle<<")";
                     glm::quat quat = glm::angleAxis(angle, glm::vec3(_v[0], _v[1], _v[2]));
                     cur->parent->transform->appendLocalQuaternion(quat);
+                    cur->parent->transform->updateLocalCalculation();
                     ////////qDebug()<<"------------------  r : ("<<_v[0]<<", "<<_v[1]<<", "<<_v[2]<<")";
                     i++;
                 }
@@ -2131,6 +2132,7 @@ void FGEOpenGLWidget::findNewAngles(FGEDataBone *endEffector, FGEDataBone *base,
 
                 rot = glm::angleAxis(angle, rotAxis);
                 currentBone->parent->transform->appendLocalQuaternion(rot);
+                currentBone->parent->transform->updateLocalCalculation();
             }else {
                 found = true;
             }

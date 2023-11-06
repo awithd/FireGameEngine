@@ -22,9 +22,9 @@ public:
 
 
 
-        if(!camera->isSet()){
+        /*if(!camera->isSet()){
             return;
-        }
+        }*/
 
         // تعيين القيم الأولية للكاميرا
         /*m_camera->view->position = glm::vec3(0.0f, 5.0f, 5.0f);

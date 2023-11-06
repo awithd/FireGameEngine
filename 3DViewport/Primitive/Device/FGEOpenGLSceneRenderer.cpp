@@ -291,7 +291,7 @@ void FGEOpenGLSceneRenderer::prepareRenderDevice(OpenGLFunctions *f)
 
         this->shader->clearAttribLocation();
         this->shader->appendAttribLocation(0, "vertex");
-        this->shaderProgram_line = this->shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/SimpleRender/Simple.vert", "/home/corolo/Qt/FireGameEngine22/Shader/SimpleRender/Simple.frag");
+        this->shaderProgram_line = this->shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/SimpleRender/Simple.vert", "/home/corolo/Qt/FireGameEngine/Shader/SimpleRender/Simple.frag");
 
         f->glGenVertexArrays(1, &this->vao_line);
         f->glGenBuffers(1, &this->vbo_line);

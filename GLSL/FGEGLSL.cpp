@@ -2,7 +2,7 @@
 
 FGEGLSL::FGEGLSL()
 {
-    this->path_models = "/home/corolo/Qt/FireGameEngine22/Shader/Model/";
+    this->path_models = "/home/corolo/Qt/FireGameEngine/Shader/Model/";
 }
 
 QString FGEGLSL::readFile(QString filename){

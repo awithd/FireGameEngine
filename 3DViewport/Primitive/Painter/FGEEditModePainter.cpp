@@ -20,12 +20,12 @@ void FGEEditModePainter::_setShader(OpenGLFunctions *f, FGEGLSL * shader)
             shader->clearAttribLocation();
             shader->appendAttribLocation(0, "ID");
             shader->appendAttribLocation(1, "VERTEX");
-            this->shader_program = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/EditMode/shader.vert", "/home/corolo/Qt/FireGameEngine22/Shader/EditMode/shader.frag");
+            this->shader_program = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/EditMode/shader.vert", "/home/corolo/Qt/FireGameEngine/Shader/EditMode/shader.frag");
         }
         if(this->shader_program_black==0){
             shader->clearAttribLocation();
             shader->appendAttribLocation(2, "VERTEX");
-            this->shader_program_black = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/EditMode/Black.vert", "/home/corolo/Qt/FireGameEngine22/Shader/EditMode/Black.frag");
+            this->shader_program_black = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/EditMode/Black.vert", "/home/corolo/Qt/FireGameEngine/Shader/EditMode/Black.frag");
         }
     }
 }
@@ -131,8 +131,8 @@ void FGEEditModePainter::_init(OpenGLFunctions *f, FGENodeShaderItem *item)
 {
     if(this->shader!=NULL){
         if(item->sp_edit_black<0){
-            QString _vert = "/home/corolo/Qt/FireGameEngine22/Shader/EditMode/Black.vert";
-            QString _frag = "/home/corolo/Qt/FireGameEngine22/Shader/EditMode/Black.frag";
+            QString _vert = "/home/corolo/Qt/FireGameEngine/Shader/EditMode/Black.vert";
+            QString _frag = "/home/corolo/Qt/FireGameEngine/Shader/EditMode/Black.frag";
             //qDebug()<< "_vert "<<_vert;
 
 
@@ -158,8 +158,8 @@ void FGEEditModePainter::_init(OpenGLFunctions *f, FGENodeShaderItem *item)
             qDebug()<< "Black";
         }
         if(item->sp_edit_point<0){
-            QString _vert = "/home/corolo/Qt/FireGameEngine22/Shader/EditMode/Points.vert";
-            QString _frag = "/home/corolo/Qt/FireGameEngine22/Shader/EditMode/Points.frag";
+            QString _vert = "/home/corolo/Qt/FireGameEngine/Shader/EditMode/Points.vert";
+            QString _frag = "/home/corolo/Qt/FireGameEngine/Shader/EditMode/Points.frag";
             //qDebug()<< "_vert "<<_vert;
 
 

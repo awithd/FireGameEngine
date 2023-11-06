@@ -112,7 +112,7 @@ qDebug() << "+++++++++++++++++++++++++++++kkkkkkk : "<<triger<<struct_project;
         if(!st) {
             item = new FGEStandardItem();
             item->setText(p->name);
-            item->setIcon(QIcon("/home/corolo/Qt/FireGameEngine22/Icons/green-star.png"));
+            item->setIcon(QIcon("/home/corolo/Qt/FireGameEngine/Icons/green-star.png"));
             item->l_data = (void *)p;
             item->type = 0;
             qDebug() << "0 item->l_data : "<<j<<"  -  "<<item->l_data;
@@ -122,9 +122,9 @@ qDebug() << "+++++++++++++++++++++++++++++kkkkkkk : "<<triger<<struct_project;
             while(_n!=NULL){
                 QString icon;
                 if(_n->type=="Light"){
-                    icon = "/home/corolo/Qt/FireGameEngine22/Icons/sun.png";
+                    icon = "/home/corolo/Qt/FireGameEngine/Icons/sun.png";
                 }else{
-                    icon = "/home/corolo/Qt/FireGameEngine22/Icons/green-star.png";
+                    icon = "/home/corolo/Qt/FireGameEngine/Icons/green-star.png";
                 }
                 FGEStandardItem *child = new FGEStandardItem();
                 child->setText(_n->name);
@@ -159,9 +159,9 @@ qDebug() << "+++++++++++++++++++++++++++++kkkkkkk : "<<triger<<struct_project;
                 if(!st) {
                     QString icon;
                     if(_n->type=="Light"){
-                        icon = "/home/corolo/Qt/FireGameEngine22/Icons/sun.png";
+                        icon = "/home/corolo/Qt/FireGameEngine/Icons/sun.png";
                     }else{
-                        icon = "/home/corolo/Qt/FireGameEngine22/Icons/green-star.png";
+                        icon = "/home/corolo/Qt/FireGameEngine/Icons/green-star.png";
                     }
                     FGEStandardItem *child = new FGEStandardItem();
                     child->setText(_n->name);

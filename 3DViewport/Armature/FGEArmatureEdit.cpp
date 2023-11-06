@@ -310,6 +310,7 @@ bool FGEArmatureEdit::rotateBone(FGEDataBone* bone, glm::vec3 &_q0, glm::vec3 &_
             if(angle!=0 && !qIsNaN(angle)){
                 glm::quat kff = glm::angleAxis(angle, glm::vec3(_v[0], _v[1], _v[2]));
                 bone->transform->appendLocalQuaternion(kff);
+                bone->transform->updateLocalCalculation();
 
                 glm::mat4 c_m = glm::toMat4(kff);
                 float x, y, z;
@@ -471,6 +472,7 @@ bool FGEArmatureEdit::gizmoArmatureEditDragMouse(OpenGLFunctions *f, FGEGizmos *
                     float angle = glm::acos(cos2a);
                     glm::quat kff = glm::angleAxis(angle, glm::vec3(_v[0], _v[1], _v[2]));
                     dsib->item->transform->appendLocalQuaternion(kff);
+                    dsib->item->transform->updateLocalCalculation();
                     float l = glm::length(_q1);
                     dsib->item->length = l;
                     //dsib->item->transform->setLocalZVectorTranslation(l);

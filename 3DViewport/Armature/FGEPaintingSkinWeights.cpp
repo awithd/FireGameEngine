@@ -7,7 +7,7 @@ FGEPaintingSkinWeights::FGEPaintingSkinWeights(OpenGLFunctions *f)
     this->shader = new FGEGLSL();
     this->shader->clearAttribLocation();
     this->shader->appendAttribLocation(0, "vertex");
-    this->shaderProgram = this->shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Sculpt/GizmoSculpt.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Sculpt/GizmoSculpt.frag");
+    this->shaderProgram = this->shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Sculpt/GizmoSculpt.vert", "/home/corolo/Qt/FireGameEngine/Shader/Sculpt/GizmoSculpt.frag");
 
     /*FGE3DGeometryCircle circle;
     QVector<uint> index_line;

@@ -20,7 +20,7 @@ void FGESelectionArmaturePose::init(OpenGLFunctions *f, FGEDataProject *struct_p
     this->shader = shader;
     this->shader->clearAttribLocation();
     this->shader->appendAttribLocation(0, "vertex");
-    this->shader_program_box = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Select/selectBox.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Select/selectBox.frag");
+    this->shader_program_box = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Select/selectBox.vert", "/home/corolo/Qt/FireGameEngine/Shader/Select/selectBox.frag");
     //this->shader_program_selection = shader_program_selection;
 
 

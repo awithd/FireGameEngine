@@ -32,7 +32,7 @@ void FGECameraPainter::init(OpenGLFunctions *f)
     shader = new FGEGLSL();
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    shaderProgram_line = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/SimpleRender/Simple.vert", "/home/corolo/Qt/FireGameEngine22/Shader/SimpleRender/Simple.frag");
+    shaderProgram_line = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/SimpleRender/Simple.vert", "/home/corolo/Qt/FireGameEngine/Shader/SimpleRender/Simple.frag");
 
     pos_nf.push_back(-1.0f);
     pos_nf.push_back(1.0f);

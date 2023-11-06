@@ -31,7 +31,7 @@ void FGECreateCameraPropertiesForm::on_create_pushButton_clicked()
     node->node_type = FGE_NODE_TYPE_CAMERA;
 
     node->camera = new FGEDataCamera();
-    node->camera->view->relative_position = node->transform;
+    node->camera->view->position = node->transform;
     //node->camera->m_projectionData->
     qDebug() << "node->camera 0";
 

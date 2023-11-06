@@ -9,23 +9,23 @@ FGEDrawGizmoScale::FGEDrawGizmoScale(OpenGLFunctions *f, FGEGizmoConstraintAxis 
     shader = new FGEGLSL();
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    translation_item->shaderProgram = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/ScaleShader/GizmosScale.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/ScaleShader/GizmosScale.frag");
+    translation_item->shaderProgram = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/ScaleShader/GizmosScale.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/ScaleShader/GizmosScale.frag");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    translation_item->shaderProgram_NO_VIEW = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/ScaleShader/GizmosScaleNoview->vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/ScaleShader/GizmosScale.frag");
+    translation_item->shaderProgram_NO_VIEW = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/ScaleShader/GizmosScaleNoview->vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/ScaleShader/GizmosScale.frag");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    translation_item->shaderProgram_sphere = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/ScaleShader/ScaleSphere.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/ScaleShader/ScaleSphere.frag");
+    translation_item->shaderProgram_sphere = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/ScaleShader/ScaleSphere.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/ScaleShader/ScaleSphere.frag");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    translation_item->shaderProgram_line = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/ScaleShader/GizmosScaleLine.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/ScaleShader/GizmosScaleLine.frag");
+    translation_item->shaderProgram_line = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/ScaleShader/GizmosScaleLine.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/ScaleShader/GizmosScaleLine.frag");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    translation_item->shaderProgram_selection = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/ScaleShader/GizmosScaleSelection.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/ScaleShader/GizmosScaleSelection.frag");
+    translation_item->shaderProgram_selection = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/ScaleShader/GizmosScaleSelection.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/ScaleShader/GizmosScaleSelection.frag");
 
 
     sel_transf_mode = mode;

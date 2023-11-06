@@ -52,37 +52,31 @@ class FGEDataCameraView{
 public:
 
     FGEDataCameraView(){
-        this->relative_tarjet=NULL;
-        this->relative_position=NULL;
-        this->relative_up=NULL;
+        this->position=NULL;
     }
 
-    FGETransformation *relative_tarjet;
-    FGETransformation *relative_position;
-    FGETransformation *relative_up;
-
     glm::vec3 getGlobalPosition(){
-        if(relative_position!=NULL){
-            return glm::vec4(0,0,0,1)*relative_position->getGlobalTransformation();
+        if(this->position!=NULL){
+            return glm::vec4(0,0,0,1)*this->position->getGlobalTransformation();
         }else{
             return glm::vec3(0,0,0);
         }
     }
     glm::vec3 getGlobalTarjet(){
-        if(relative_position!=NULL){
+        if(this->position!=NULL){
             return glm::vec4(this->tarjet.x, this->tarjet.y, this->tarjet.z, 1)
                     * this->position->getGlobalTransformation();
 
         }else{
-            return tarjet;
+            return glm::vec3(0,0,0);
         }
     }
     glm::vec3 getGlobalUp(){
-        if(relative_position!=NULL){
+        if(this->position!=NULL){
             return glm::vec4(this->up.x, this->up.y, this->up.z, 1)
                     * this->position->getGlobalTransformation();
         }else{
-            return up;
+            return glm::vec3(0,0,0);
         }
     }
 
@@ -98,7 +92,7 @@ public:
     FGEDataCamera(){
         this->projection = new FGEDataCameraProjection();
         this->view = new FGEDataCameraView();
-        init();
+        this->init();
     }
     ~FGEDataCamera(){
         delete this->projection;

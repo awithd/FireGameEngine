@@ -15,10 +15,10 @@ FGESculptModeForm::FGESculptModeForm(FGEDataProject *data_project, FGETriggerFun
     this->name_parent = name_parent;
 
 
-    addSculptItem(0, "Draw", "/home/corolo/Qt/FireGameEngine22/Icons/Sculpts/1.png");
-    addSculptItem(1, "Clay", "/home/corolo/Qt/FireGameEngine22/Icons/Sculpts/2.png");
-    addSculptItem(2, "Flatten", "/home/corolo/Qt/FireGameEngine22/Icons/Sculpts/3.png");
-    addSculptItem(3, "Crease", "/home/corolo/Qt/FireGameEngine22/Icons/Sculpts/4.png");
+    addSculptItem(0, "Draw", "/home/corolo/Qt/FireGameEngine/Icons/Sculpts/1.png");
+    addSculptItem(1, "Clay", "/home/corolo/Qt/FireGameEngine/Icons/Sculpts/2.png");
+    addSculptItem(2, "Flatten", "/home/corolo/Qt/FireGameEngine/Icons/Sculpts/3.png");
+    addSculptItem(3, "Crease", "/home/corolo/Qt/FireGameEngine/Icons/Sculpts/4.png");
 
     FGESculptItem *p = this->first_sculpt_item;
     //QSize size(290, 260);

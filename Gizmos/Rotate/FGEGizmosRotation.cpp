@@ -1,6 +1,6 @@
 ﻿#include "FGEGizmosRotation.h"
 
-#define path_shader_gizmos "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/"
+#define path_shader_gizmos "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/"
 
 FGEGizmosRotation::FGEGizmosRotation(OpenGLFunctions *f, FGESUBSelectedTransformationMode *mode)
 {
@@ -11,47 +11,47 @@ FGEGizmosRotation::FGEGizmosRotation(OpenGLFunctions *f, FGESUBSelectedTransform
     shader = new FGEGLSL();
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    rotation_item->shaderProgram = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosRotation.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosRotation.frag");
+    rotation_item->shaderProgram = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosRotation.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosRotation.frag");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    rotation_item->shaderProgram_simple = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosSimpleRotation.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosSimpleRotation.frag");
+    rotation_item->shaderProgram_simple = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosSimpleRotation.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosSimpleRotation.frag");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    rotation_item->shaderProgram_simple_axe = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosSimpleAxeRotation.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosSimpleAxeRotation.frag");
+    rotation_item->shaderProgram_simple_axe = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosSimpleAxeRotation.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosSimpleAxeRotation.frag");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    rotation_item->shaderProgram_sphere = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosInner.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosInner.frag");
+    rotation_item->shaderProgram_sphere = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosInner.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosInner.frag");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    rotation_item->shaderProgram_w = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosOuter.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosOuter.frag");
+    rotation_item->shaderProgram_w = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosOuter.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosOuter.frag");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    rotation_item->shaderProgram_w_axe = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosSelectedOuter.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosSelectedOuter.frag");
+    rotation_item->shaderProgram_w_axe = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosSelectedOuter.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosSelectedOuter.frag");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    rotation_item->shaderProgram_axe = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosAxe.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosAxe.frag");
+    rotation_item->shaderProgram_axe = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosAxe.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosAxe.frag");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    rotation_item->shaderProgram_selected_axe = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosSelectedAxe.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosSelectedAxe.frag");
+    rotation_item->shaderProgram_selected_axe = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosSelectedAxe.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosSelectedAxe.frag");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    rotation_item->shaderProgram_vlines = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosVLinesVertexShader.sh", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosVLinesFragmentShader.sh");
+    rotation_item->shaderProgram_vlines = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosVLinesVertexShader.sh", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosVLinesFragmentShader.sh");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    rotation_item->shaderProgram_angle = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosAngle.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosAngle.frag");
+    rotation_item->shaderProgram_angle = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosAngle.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosAngle.frag");
 
     shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");
-    rotation_item->shaderProgram_angle_w = shader->initShader(f, "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosAngleW.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Gizmos/Rotation/GizmosAngleW.frag");
+    rotation_item->shaderProgram_angle_w = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosAngleW.vert", "/home/corolo/Qt/FireGameEngine/Shader/Gizmos/Rotation/GizmosAngleW.frag");
 
     /*shader->clearAttribLocation();
     shader->appendAttribLocation(0, "vertex");

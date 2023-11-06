@@ -977,7 +977,7 @@ FGEDataNode * FGE3DGeometryBox::createNodeBox(FGEDataProject *data_project, QStr
     data_mesh->material->effect = new FGEDataEffect();
     data_mesh->material->effect->diffuse_texture = new FGEDataTexture();
     data_mesh->material->effect->diffuse_texture->setName("checker-pattern.jpg");
-    data_mesh->material->effect->diffuse_texture->setPath("/home/corolo/Qt/FireGameEngine22/Images");
+    data_mesh->material->effect->diffuse_texture->setPath("/home/corolo/Qt/FireGameEngine/Images");
     data_project->appendNewTexture(data_mesh->material->effect->diffuse_texture);
 
 
