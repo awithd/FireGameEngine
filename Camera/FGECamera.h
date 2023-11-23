@@ -13,32 +13,47 @@
 #include <math.h>
 #include <QWheelEvent>
 #include <StructData/FGEDataProject.h>
+#include <Tools/FGEConsole.h>
 
 
 class FGECamera {
 public:
-    FGECamera(FGEDataCamera *camera)
-        : m_camera(camera), m_isDragging(false), m_isZooming(false), m_isRotating(false) {
+    FGECamera(FGEDataCamera *camera){
 
-
-
-        /*if(!camera->isSet()){
+        this->m_camera = camera;
+        this->m_isDragging = NULL;
+        this->m_isZooming = NULL;
+        this->m_isRotating = NULL;
+        if(!camera->isSet()){
             return;
-        }*/
+        }
+
 
         // تعيين القيم الأولية للكاميرا
         /*m_camera->view->position = glm::vec3(0.0f, 5.0f, 5.0f);
         m_camera->view->tarjet = glm::vec3(0.0f, 0.0f, 0.0f);
         m_camera->view->up = glm::vec3(0.0f, 1.0f, -1.0f);*/
         glm::vec3 position = m_camera->view->position->getVector3GlobalTransformation();
-        glm::vec4 tarjet = glm::vec4(m_camera->view->tarjet.x, m_camera->view->tarjet.y, m_camera->view->tarjet.z, 1)*
-                 m_camera->view->position->getGlobalTransformation();
-        glm::vec4 up = glm::vec4(m_camera->view->up.x, m_camera->view->up.y, m_camera->view->up.z, 1)
-                *m_camera->view->position->getGlobalTransformation();
+        glm::vec4 tarjet = m_camera->view->position->getGlobalTransformation()*glm::vec4(m_camera->view->tarjet.x, m_camera->view->tarjet.y, m_camera->view->tarjet.z, 1);
+        glm::vec4 up = m_camera->view->position->getGlobalTransformation()*glm::vec4(m_camera->view->up.x, m_camera->view->up.y, m_camera->view->up.z, 1);
 
         glm::vec3 _tarjet = tarjet;
         glm::vec3 _up = up;
+        _up = _up-position;
+        FGEConsole::print("_tarjet", _tarjet);
 
+        glm::vec4 tesy = glm::vec4(0.0f, 0.f, 0.f, 1.0f);
+        glm::vec3 _tesy = glm::inverse(m_camera->view->position->getGlobalTransformation())*tesy;
+        FGEConsole::print("_tesy", _tesy);
+
+        {
+            glm::vec3 v1 = glm::vec3(0.0f, 0.f, 1.f);
+            glm::vec3 v2 = glm::vec3(0.0f, 1.f, 0.f);
+            glm::quat rot = glm::rotation(v1, v2);
+            v1 = rot * glm::vec4(v1.x, v1.y, v1.z, 1.0f);
+            FGEConsole::print("v1", v1);
+
+        }
         m_camera->view->matrix = glm::lookAt(position, _tarjet, _up);
 
         // تعيين القيم الأولية للإسقاط
@@ -58,6 +73,7 @@ public:
 
         // حساب مصفوفة التحويل مرة واحدة فقط
         m_mvpMatrix = calculateMVPMatrix(glm::mat4(1.0f));
+
     }
 
     void setCamera(FGEDataCamera *camera) {
@@ -71,16 +87,15 @@ public:
         this->m_mvpMatrix = calculateMVPMatrix(glm::mat4(1.0f));
     }
 
-    void updateCameraAndView() {
-        // تحديث البيانات هنا
-
-        // حساب مصفوفة التحويل وتحديثها مرة واحدة
-        m_mvpMatrix = calculateMVPMatrix(glm::mat4(1.0f));
+    void updateCamera() {
+        this->updateViewMatrix();
+        this->updateProjectionMatrix();
+        this->m_mvpMatrix = calculateMVPMatrix(glm::mat4(1.0f));
+        FGEConsole::print("Here", this->m_mvpMatrix);
     }
+
     glm::mat4 calculateMVPMatrix(const glm::mat4& modelMatrix) {
-        glm::mat4 projectionMatrix = getProjectionMatrix();
-        glm::mat4 viewMatrix = getViewMatrix();
-        return projectionMatrix * viewMatrix * modelMatrix;
+        return m_camera->projection->matrix * m_camera->view->matrix * modelMatrix;
     }
 
 
@@ -161,16 +176,16 @@ public:
     void moveCamera(float startX, float startY, float endX, float endY) {
 
 
-        //glm::vec3 position = m_camera->view->relative_position->getVector3GlobalTransformation();
-
         // تحويل إحداثيات النقر من الشاشة إلى العالم
         glm::vec3 pos_w_old = glm::unProject(glm::vec3(startX, startY, 10.0f), m_camera->view->matrix, m_camera->projection->matrix, glm::vec4(0.0f, 0.0f, screenWidth, screenHeight));
         glm::vec3 pos_w_new = glm::unProject(glm::vec3(endX, endY, 10.0f), m_camera->view->matrix, m_camera->projection->matrix, glm::vec4(0.0f, 0.0f, screenWidth, screenHeight));
 
         // حساب الاتجاه وتطبيق الزيادة
 
-        glm::vec4 v_new = m_camera->view->position->getGlobalTransformation()/glm::vec4(pos_w_new.x,pos_w_new.z,pos_w_new.z,1);
-        glm::vec4 v_old = m_camera->view->position->getGlobalTransformation()/glm::vec4(pos_w_old.x,pos_w_old.z,pos_w_old.z,1);
+        //glm::vec4 v_new = m_camera->view->position->getGlobalTransformation()/glm::vec4(pos_w_new.x,pos_w_new.z,pos_w_new.z,1);
+        //glm::vec4 v_old = m_camera->view->position->getGlobalTransformation()/glm::vec4(pos_w_old.x,pos_w_old.z,pos_w_old.z,1);
+        glm::vec4 v_new = glm::vec4(pos_w_new.x,pos_w_new.y,pos_w_new.z,1);
+        glm::vec4 v_old = glm::vec4(pos_w_old.x,pos_w_old.y,pos_w_old.z,1);
 
         //glm::vec3 w0 = pos_w_old - pos_w_new;
         glm::vec4 w0 = v_old - v_new;
@@ -180,12 +195,10 @@ public:
 
         // تحريك الكاميرا
 
-        m_camera->view->position->setLocalVectorTranslation(w0.x,w0.y,w0.z);
+        m_camera->view->position->appendLocalVectorTranslation(w0.x,w0.y,w0.z);
         //m_camera->view->position += w0;
         //m_camera->view->tarjet += w0;
-
-
-        updateViewMatrix();
+        m_camera->view->position->updateLocalCalculation();
     }
     void zoom(float delta) {
         /*float scaleFactorChange = delta * 0.0001f;
@@ -233,10 +246,6 @@ public:
         return m_mvpMatrix;
     }
 
-    float screenWidth /* عرض النافذة */;
-    float screenHeight /* ارتفاع النافذة */;
-
-    FGEDataCamera *m_camera;
 
 
 
@@ -247,13 +256,15 @@ public:
                            *m_camera->view->position->getGlobalTransformation();
         glm::vec4 up = glm::vec4(m_camera->view->up.x, m_camera->view->up.y, m_camera->view->up.z, 1)
                 *m_camera->view->position->getGlobalTransformation();
+
         glm::vec3 _tarjet = tarjet;
         glm::vec3 _up = up;
+        _up = _up-position;
         qDebug() <<"123 up : ("<<up.x<<", "<<up.y<<", "<<up.z<<")";
         qDebug() <<"123 _tarjet : ("<<_tarjet.x<<", "<<_tarjet.y<<", "<<_tarjet.z<<")";
         qDebug() <<"123 position : ("<<position.x<<", "<<position.y<<", "<<position.z<<")";
         m_camera->view->matrix = glm::lookAt(position, _tarjet, _up);
-
+        FGEConsole::print("view", m_camera->view->matrix);
     }
 
     void updateProjectionMatrix() {
@@ -262,157 +273,141 @@ public:
         } else {
             m_camera->projection->matrix = glm::ortho(m_camera->projection->ortho.left, m_camera->projection->ortho.right, m_camera->projection->ortho.bottom, m_camera->projection->ortho.top);
         }
+        FGEConsole::print("projection", m_camera->projection->matrix);
+
     }
 
     void rotate(float startX, float startY, float endX, float endY) {
-        qDebug() << "Y : "<<startY<<", "<<endY;
+        glm::mat4 __m = m_camera->view->position->getGlobalTransformation();
+        glm::vec3 gpos_position = __m * glm::vec4(0, 0, 0, 1);
 
+        glm::vec3 gpos_tarjet = __m*glm::vec4(m_camera->view->tarjet.x, m_camera->view->tarjet.y, m_camera->view->tarjet.z, 1);
+        glm::vec3 _vector = gpos_position - gpos_tarjet;
 
-            float radians;
-            glm::quat rotation;
+        glm::vec3 gpos_up = __m*glm::vec4(m_camera->view->up.x, m_camera->view->up.y, m_camera->view->up.z, 1);
+        glm::vec3 _vector_up = gpos_up - gpos_tarjet;
 
-            glm::vec4 gpos_position = m_camera->view->position->getVector4GlobalTransformation();
-            glm::vec4 gpos_tarjet = glm::vec4(m_camera->view->tarjet.x, m_camera->view->tarjet.y, m_camera->view->tarjet.z, 1)
-                     *m_camera->view->position->getGlobalTransformation();
-            //glm::vec4 up = m_camera->view->position->getGlobalTransformation()
-            //        *glm::vec4(m_camera->view->up.x, m_camera->view->up.y, m_camera->view->up.z, 1);
-glm::vec3 _xy;
+        {
+            float radians = (startY - endY)/10;
+            glm::vec3 _x = glm::unProject(glm::vec3(screenWidth/2, screenHeight/2, 0.0f), m_camera->view->matrix, m_camera->projection->matrix, glm::vec4(0.0f, 0.0f, screenWidth, screenHeight));
+            glm::vec3 _y = glm::unProject(glm::vec3(screenWidth/2+100, screenHeight/2, 0.0f), m_camera->view->matrix, m_camera->projection->matrix, glm::vec4(0.0f, 0.0f, screenWidth, screenHeight));
+
+            glm::vec3 _xy = glm::normalize(_y-_x);
+
+            radians = glm::radians(radians);
+
+            glm::vec3 gpos_new_position = glm::rotate(_vector, radians, _xy);
+            gpos_new_position = gpos_tarjet + gpos_new_position;
+
+            m_camera->view->position->setLocalVectorTranslation(gpos_new_position);
+            m_camera->view->position->updateLocalCalculation();
+
 
             {
-                qDebug() << "position ("<<""<<gpos_position.x<<""<<gpos_position.y<<""<<gpos_position.z<<")";
-                qDebug() << "tarjet ("<<""<<gpos_tarjet.x<<""<<gpos_tarjet.y<<""<<gpos_tarjet.z<<")";
-                //qDebug() << "up ("<<""<<up.x<<""<<up.y<<""<<up.z<<")";
-            }
-glm::vec4 gpos_new_position;
+                __m = m_camera->view->position->getGlobalTransformation();
+                glm::vec3 lpos_tarjet = glm::inverse(__m)*glm::vec4(gpos_tarjet.x, gpos_tarjet.y, gpos_tarjet.z, 1);
 
-            {
-                radians = (startY - endY)/10;
-                glm::vec3 _x = glm::unProject(glm::vec3(screenWidth/2, screenHeight/2, 0.0f), m_camera->view->matrix, m_camera->projection->matrix, glm::vec4(0.0f, 0.0f, screenWidth, screenHeight));
-                glm::vec3 _y = glm::unProject(glm::vec3(screenWidth/2+100, screenHeight/2, 0.0f), m_camera->view->matrix, m_camera->projection->matrix, glm::vec4(0.0f, 0.0f, screenWidth, screenHeight));
-                _xy = glm::normalize(_y-_x);
-                _xy = glm::vec3(1,0,0);
+                glm::vec3 _from = glm::normalize(m_camera->view->tarjet);
+                glm::vec3 _to = glm::normalize(lpos_tarjet);
 
-                qDebug() << "rotation : "<<radians;
-
-                radians = glm::radians(radians);
-                rotation = glm::angleAxis(radians, _xy);
-
-
-                glm::vec4 _vector = gpos_position - gpos_tarjet;
-                _vector.w = 1;
-
-                _vector = rotation * _vector;
-                gpos_new_position = gpos_tarjet + _vector;
-
-
-                m_camera->view->position->setLocalVectorTranslation(gpos_new_position);
-                m_camera->view->position->updateLocalCalculation();
-
-                //glm::vec3 lpos_tarjet = m_camera->view->position->getGlobalTransformation()/gpos_tarjet;
-
-
-                glm::vec3 lpos_tarjet = gpos_tarjet;
-                //_xy = -_xy;
-
-                rotation = glm::rotation(m_camera->view->tarjet, lpos_tarjet);
+                glm::quat rotation = glm::rotation(_from, _to);
 
                 m_camera->view->position->appendLocalQuaternion(rotation);
                 m_camera->view->position->updateLocalCalculation();
 
             }
+            // correct rotate up vector to (0,1,0)
             {
-                radians = (startX - endX)/10;
-                glm::vec3 _xy = glm::vec3(0,1,0);
+                //gpos_position = __m * glm::vec4(0, 0, 0, 1);
 
-                radians = glm::radians(radians);
-                rotation = glm::angleAxis(radians, _xy);
+                glm::vec3 gpos_new_position = glm::rotate(_vector_up, radians, _xy);
 
+                gpos_new_position = gpos_tarjet + gpos_new_position;
 
-                glm::vec4 _vector = rotation * (gpos_new_position - gpos_tarjet);
-                gpos_new_position = gpos_tarjet + _vector;/**/
+                {
+                    __m = m_camera->view->position->getGlobalTransformation();
+                    glm::vec3 lpos_up = glm::inverse(__m)*glm::vec4(gpos_new_position.x, gpos_new_position.y, gpos_new_position.z, 1);
 
+                    glm::vec3 _from = glm::normalize(lpos_up);
+                    glm::vec3 _to = m_camera->view->up;
 
-                //gpos_new_position = m_camera->view->position->getGlobalTransformation()/gpos_new_position;
-                //gpos_new_position = gpos_new_position*glm::inverse(m_camera->view->position->getGlobalTransformation());
+                    glm::quat rotation = glm::rotation(_from, _to);
 
-
-                /*position = rotation * position;*/
-                //position = glm::inverse(m_camera->view->position->getGlobalTransformation())*_p;
-                //m_camera->view->position->setLocalVectorTranslation(_p.x, _p.y, _p.z);
-                //m_camera->view->position->updateLocalCalculation();
-
-                //up = rotation * up;
-                m_camera->view->position->setLocalVectorTranslation(gpos_new_position);
-                m_camera->view->position->updateLocalCalculation();
-
-                //lpos_tarjet = m_camera->view->position->getGlobalTransformation()/gpos_tarjet;
-
-
-                //_xy = -_xy;
-
-                glm::vec3 lpos_tarjet = gpos_tarjet;
-                rotation = glm::rotation(m_camera->view->tarjet, lpos_tarjet);
-
-                m_camera->view->position->appendLocalQuaternion(rotation);
-                m_camera->view->position->updateLocalCalculation();
-
-            }
-
-
-
-            /*{
-                radians = (startX - endX)/10;
-                glm::vec3 _xy = glm::vec3(0,1,0);
-
-                radians = glm::radians(radians);
-                rotation = glm::angleAxis(radians, _xy);
-
-
-                glm::vec4 _newo = rotation * (position - tarjet);
-                position = _newo + tarjet;
-                //position = glm::inverse(m_camera->view->position->getParentGlobalMatrixTransformation())*_p;
-
-                //up = rotation * up;
-
-
-                //m_camera->view->up = _p*glm::inverse(m_camera->view->position->getGlobalTransformation());
-
-            }/**/
-
-
-
-
-            /*{
-
-                //glm::vec4 __tarjet = tarjet-position;
-
-                //glm::vec4 position = m_camera->view->position->getVector4GlobalTransformation();
-                //glm::vec4 __tarjet = m_camera->view->position->getGlobalTransformation()
-                //*glm::vec4(m_camera->view->tarjet.x, m_camera->view->tarjet.y, m_camera->view->tarjet.z, 1);
-                //glm::vec4 up = m_camera->view->position->getGlobalTransformation()
-                //        *glm::vec4(m_camera->view->up.x, m_camera->view->up.y, m_camera->view->up.z, 1);
-
-                //__tarjet = position+__tarjet;
-                tarjet =  m_camera->view->position->getGlobalTransformation()/tarjet;
-
-                glm::vec3 first = m_camera->view->tarjet;
-                glm::vec3 second = tarjet;
-                //tarjet = glm::inverse(m_camera->view->position->getGlobalTransformation())*tarjet;
-                glm::vec3 _v = glm::normalize(glm::cross(first,  second));
-
-                float cos2a  = glm::dot(first,  second);
-                float angle = glm::acos(cos2a);
-                //if(angle!=0 && !qIsNaN(angle)){
-                    glm::quat kff = glm::angleAxis(angle, glm::vec3(_v[0], _v[1], _v[2]));
-                    m_camera->view->position->appendLocalQuaternion(kff);
+                    m_camera->view->position->appendLocalQuaternion(rotation);
                     m_camera->view->position->updateLocalCalculation();
-                //}
-            }*/
+
+                }
+            }
+
+        }
+
+        __m = m_camera->view->position->getGlobalTransformation();
+
+        gpos_position = __m * glm::vec4(0, 0, 0, 1);
+        gpos_tarjet =  __m*glm::vec4(m_camera->view->tarjet.x, m_camera->view->tarjet.y, m_camera->view->tarjet.z, 1);
+        _vector = gpos_position - gpos_tarjet;
+
+        gpos_up =  __m*glm::vec4(m_camera->view->up.x, m_camera->view->up.y, m_camera->view->up.z, 1);
+        _vector_up = gpos_up - gpos_tarjet;
+
+        {
+
+            float radians = (startX - endX)/10;
+            glm::vec3 _xy = glm::vec3(0,1,0);
+
+            radians = glm::radians(radians);
+
+            glm::vec3 gpos_new_position = glm::rotate(_vector, radians, _xy);
+            gpos_new_position = gpos_tarjet + gpos_new_position;
+
+            m_camera->view->position->setLocalVectorTranslation(gpos_new_position);
+            m_camera->view->position->updateLocalCalculation();
 
 
+            {
+                __m = m_camera->view->position->getGlobalTransformation();
+                glm::vec3 lpos_tarjet = glm::inverse(__m)*glm::vec4(gpos_tarjet.x, gpos_tarjet.y, gpos_tarjet.z, 1);
 
-            updateViewMatrix();
+                glm::vec3 _from = glm::normalize(m_camera->view->tarjet);
+                glm::vec3 _to = glm::normalize(lpos_tarjet);
+
+                glm::quat rotation = glm::rotation(_from, _to);
+
+                m_camera->view->position->appendLocalQuaternion(rotation);
+                m_camera->view->position->updateLocalCalculation();
+
+            }
+
+            // correct rotate up vector to (0,1,0)
+            {
+                //gpos_position = __m * glm::vec4(0, 0, 0, 1);
+
+                glm::vec3 gpos_new_position = glm::rotate(_vector_up, radians, _xy);
+                gpos_new_position = gpos_tarjet + gpos_new_position;
+
+                {
+                    __m = m_camera->view->position->getGlobalTransformation();
+                    glm::vec3 lpos_up = glm::inverse(__m)*glm::vec4(gpos_new_position.x, gpos_new_position.y, gpos_new_position.z, 1);
+
+                    glm::vec3 _from = glm::normalize(lpos_up);
+                    glm::vec3 _to = glm::normalize(m_camera->view->up);
+
+                    glm::quat rotation = glm::rotation(_to, _from);
+
+                    m_camera->view->position->appendLocalQuaternion(rotation);
+                    m_camera->view->position->updateLocalCalculation();
+
+                }
+            }
+        }
+
+        updateViewMatrix();
     }
+
+    float screenWidth /* عرض النافذة */;
+    float screenHeight /* ارتفاع النافذة */;
+
+    FGEDataCamera *m_camera;
 
     bool m_isDragging;
     bool m_isZooming;

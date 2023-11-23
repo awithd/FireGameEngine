@@ -10,7 +10,9 @@ class FGEConsole
 {
 public:
     FGEConsole();
-    void print(QString s, glm::mat4 &m);
+    static void print(QString s, glm::mat4 &m);
+    static void print(QString s, glm::vec3 &v);
+    static void print(QString s, glm::vec4 &v);
 };
 
 #endif // FGECONSOLE_H

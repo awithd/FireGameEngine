@@ -85,8 +85,6 @@ class FGEOpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 public:
     explicit FGEOpenGLWidget(FGETriggerFunction *trigger, FGECreateNewObject *create_new_object, FGEDataProject *sp, QString name, void *dock, QWidget *parent = nullptr);
     ~FGEOpenGLWidget();
-    void initProjection();
-    void swappeProjection(int mode);
     OpenGLFunctions * openGLFunctions() const;
     void triggerUpdateGL();
     void initializeGL();

@@ -15,4 +15,16 @@ void FGEConsole::print(QString s, glm::mat4 &m)
     qDebug()<<"         " << m[3][0] << ", "<< m[3][1] << ", "<< m[3][2] << ", "<< m[3][3] << ", ";
     qDebug()<<"   ]";
 }
+void FGEConsole::print(QString s, glm::vec3 &v)
+{
+    qDebug()<< s << " vector 3 [";
+    qDebug()<<"         " << v[0] << ", "<< v[1] << ", "<< v[2];
+    qDebug()<<"   ]";
+}
+void FGEConsole::print(QString s, glm::vec4 &v)
+{
+    qDebug()<< s << " vector 4 [";
+    qDebug()<<"         " << v[0] << ", "<< v[1] << ", "<< v[2] << ", "<< v[3];
+    qDebug()<<"   ]";
+}
 

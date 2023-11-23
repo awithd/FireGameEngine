@@ -126,8 +126,9 @@ void FGEOpenGLWidget::initializeGL()
     this->f->glEnable(GL_MULTISAMPLE);
 
     this->data_camera = new FGEDataCamera();
+glm::vec3 __v=this->data_camera->view->getGlobalPosition();
+    FGEConsole::print("000position", __v);
     this->current_data_camera = this->data_camera;
-
     this->camera = new FGECamera(this->current_data_camera);
 
     //this->camera->init(&this->view, &this->projection);
@@ -347,7 +348,7 @@ void FGEOpenGLWidget::updateInit(){
     ////////qDebug() <<"rrrrrrrrrrr t2 : ";
 }
 
-void FGEOpenGLWidget::swappeProjection(int mode){
+/*void FGEOpenGLWidget::swappeProjection(int mode){
     ////////qDebug() << "swappeProjection : "<<mode;
     if(mode==0){
         this->current_data_camera->projection->is_perspective = true;
@@ -390,9 +391,9 @@ void FGEOpenGLWidget::swappeProjection(int mode){
 
 
     update();
-}
+}*/
 
-void FGEOpenGLWidget::initProjection()
+/*void FGEOpenGLWidget::initProjection()
 {
     if(!this->current_data_camera->projection->is_set){
         float fovPerPixel = 0.1 * 3.14159265358979323846 / 180;
@@ -440,7 +441,7 @@ void FGEOpenGLWidget::initProjection()
         );
         this->current_data_camera->projection->is_set = true;
     }
-}
+}*/
 
 
 void FGEOpenGLWidget::paintGL()
@@ -451,11 +452,11 @@ void FGEOpenGLWidget::paintGL()
         QPainter painter(this);
 
 
-        this->camera->updateCameraAndView();
+        this->camera->updateCamera();
 
         //this->render_primitive->updateBuffer(this->f);
 
-        initProjection();
+        //initProjection();
 
         FGEDataScene *current_scene = data_project->current_scene;
 

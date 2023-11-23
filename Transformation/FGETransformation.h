@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <QOpenGLFunctions>
 #include <QDebug>
+#include <Tools/FGEConsole.h>
 
 
 #define FGE_TRANSFORMATION_TYPEOF_BONE_POSE     4

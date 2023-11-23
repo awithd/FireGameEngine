@@ -344,8 +344,13 @@ glm::mat4 FGETransformation::getGlobalTransformation(){
     glm::mat4 m(1.0f);
     for(int i=vp.size()-1; i>=0; i--){
         FGETransformation *s = vp.at(i);
+        FGEConsole::print("s->m_local_transformation", s->m_local_transformation);
+
         m=m*s->m_local_transformation;
     }
+
+    FGEConsole::print("m", m);
+
     return m;
 }
 glm::vec3 FGETransformation::getVector3GlobalTransformation(){
@@ -422,6 +427,7 @@ void FGETransformation::updateLocalCalculation(){
 
 void FGETransformation::__calculateLocalTransformation(){
     glm::mat4 mt_ = glm::translate(glm::mat4(1.0f), this->local_translation);
+    FGEConsole::print("T mt_",mt_);
 
     /*glm::mat4 mr_ = glm::rotate(glm::mat4(1.0f),  glm::radians((float)this->local_rotation[0]),  glm::vec3(1.0f, 0.0f, 0.0f));
     mr_ = glm::rotate(mr_,  glm::radians((float)this->local_rotation[1]),  glm::vec3(0.0f, 1.0f, 0.0f));
@@ -435,6 +441,7 @@ void FGETransformation::__calculateLocalTransformation(){
     glm::mat4 ms_ = glm::scale(glm::mat4(1.0f), this->local_scaling);
 
     this->m_local_transformation = mt_*this->m_local_rotation*ms_;
+    FGEConsole::print("T this->m_local_transformation",this->m_local_transformation);
 }
 
 glm::mat4 FGETransformation::__getGlobalRotation(FGETransformation *t){

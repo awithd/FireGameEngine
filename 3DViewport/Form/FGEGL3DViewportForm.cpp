@@ -344,8 +344,12 @@ void FGEGL3DViewportForm::on_pushButton_projection_mode_clicked()
         this->projection_mode =0;
     }
     ui->widget->update();
-    qDebug() << "*******on_pushButton_projection_mode_clicked : "<<this->projection_mode;
-    ui->glwidget_world->swappeProjection(this->projection_mode);
+    if(ui->glwidget_world!=NULL){
+        if(ui->glwidget_world->current_data_camera!=NULL){
+            ui->glwidget_world->current_data_camera->projection->is_perspective = this->projection_mode;
+        }
+    }
+
 }
 
 void FGEGL3DViewportForm::on_pushButton_object_interaction_mode_clicked()
