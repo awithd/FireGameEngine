@@ -146,8 +146,6 @@ public:
     FGEGizmos(OpenGLFunctions *f);
     void setDataCamera(FGEDataCamera *data_camera);
 
-
-
     bool pressMouse(OpenGLFunctions *f, glm::vec2 &cursor, FGETransformation *transformation, QOpenGLContext *oglc, FGERenderTarget *render_target, bool pose=true);
     bool moveMouse(OpenGLFunctions *f, glm::vec2 &cursor, FGETransformation *transformation, bool pose=true);
     bool releazeMouse();
@@ -236,7 +234,7 @@ public:
     FGEDrawGizmoScale *draw_gizmos_scale ;
 
 
-private:
+//private:
     int transforma_type;
     int saved_transforma_type;
 
