@@ -321,15 +321,12 @@ glm::mat4 FGETransformation::getGlobalTransformationNoPose(){
     while(p!=NULL){
         if(p->type!=FGE_TRANSFORMATION_TYPEOF_BONE_POSE){
             vp.push_back(p);
-            qDebug() << "      *********** BONE_POSE : "<<p->type;
         }else
-            qDebug() << "      *********** BONE : "<<p->type;
         p=p->getParent();
     }
     glm::mat4 m(1.0f);
     for(int i=vp.size()-1; i>=0; i--){
         FGETransformation *s = vp.at(i);
-        qDebug() << "      *********** kkkkjjjjgggg : "<<i;
         m=m*s->m_local_transformation;
     }
     return m;
@@ -344,12 +341,9 @@ glm::mat4 FGETransformation::getGlobalTransformation(){
     glm::mat4 m(1.0f);
     for(int i=vp.size()-1; i>=0; i--){
         FGETransformation *s = vp.at(i);
-        FGEConsole::print("s->m_local_transformation", s->m_local_transformation);
-
         m=m*s->m_local_transformation;
     }
 
-    FGEConsole::print("m", m);
 
     return m;
 }
@@ -441,7 +435,6 @@ void FGETransformation::__calculateLocalTransformation(){
     glm::mat4 ms_ = glm::scale(glm::mat4(1.0f), this->local_scaling);
 
     this->m_local_transformation = mt_*this->m_local_rotation*ms_;
-    FGEConsole::print("T this->m_local_transformation",this->m_local_transformation);
 }
 
 glm::mat4 FGETransformation::__getGlobalRotation(FGETransformation *t){

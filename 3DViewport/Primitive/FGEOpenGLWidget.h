@@ -96,14 +96,14 @@ public:
     void drawLegend(QPoint p, QPainter &painter);
     GLint getMaxSamples();
 
-    void setCurrentCamera(FGEDataCamera* camera);
+    void setCurrentCamera(FGEDataCamera* _current_data_camera);
 
     QWidget *parent;
     int WIDTH, HEIGHT;
     FGETriggerFunction *trigger;
 
     FGEDataCamera *current_data_camera;
-    FGEDataCamera *data_camera;
+    FGEDataCamera *editor_data_camera;
 
     int initialized;
     FGEDataScene *scene;

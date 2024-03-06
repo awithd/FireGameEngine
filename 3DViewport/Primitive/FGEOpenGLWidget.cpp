@@ -125,11 +125,10 @@ void FGEOpenGLWidget::initializeGL()
 
     this->f->glEnable(GL_MULTISAMPLE);
 
-    this->data_camera = new FGEDataCamera();
-glm::vec3 __v=this->data_camera->view->getGlobalPosition();
-    FGEConsole::print("000position", __v);
-    this->current_data_camera = this->data_camera;
+    this->editor_data_camera = new FGEDataCamera();
+    this->current_data_camera = this->editor_data_camera;
     this->camera = new FGECamera(this->current_data_camera);
+
 
     //this->camera->init(&this->view, &this->projection);
     //this->camera->key_shift = false;
@@ -328,11 +327,13 @@ GLint FGEOpenGLWidget::getMaxSamples() {
     return maxSamples;
 }
 
-void FGEOpenGLWidget::setCurrentCamera(FGEDataCamera *camera)
+void FGEOpenGLWidget::setCurrentCamera(FGEDataCamera *_current_data_camera)
 {
-    this->current_data_camera = camera;
-    this->camera->setCamera(this->current_data_camera);
-    this->current_data_camera->updateProjection();
+    if(_current_data_camera!=NULL) {
+        this->current_data_camera = _current_data_camera;
+        this->camera->setCamera(this->current_data_camera);
+        this->current_data_camera->updateProjection();
+    }
     update();
 }
 
@@ -451,8 +452,7 @@ void FGEOpenGLWidget::paintGL()
         this->f = openGLFunctions();
         QPainter painter(this);
 
-
-        this->camera->updateCamera();
+        this->camera->updateCameraAndView();
 
         //this->render_primitive->updateBuffer(this->f);
 
@@ -986,8 +986,8 @@ void FGEOpenGLWidget::resizeGL(int w, int h)
     WIDTH = w;
     HEIGHT = h;
 
-    this->camera->screenHeight = h;
-    this->camera->screenWidth = w;
+    this->current_data_camera->screenHeight = h;
+    this->current_data_camera->screenWidth = w;
 
     gizmos->gizmos_rotation->init(w, h);
     gizmos->setViewportWH(w, h);

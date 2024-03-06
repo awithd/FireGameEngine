@@ -51,18 +51,9 @@ public:
 
 class FGEDataCameraView{
 public:
-
-
-
     FGEDataCameraView(){
         this->position=NULL;
     }
-
-
-    FGETransformation *position;
-    glm::vec3 tarjet;
-    glm::vec3 up;
-    glm::mat4 matrix;
 
     glm::vec3 getGlobalPosition(){
         if(this->position!=NULL){
@@ -71,6 +62,7 @@ public:
             return glm::vec3(0,0,0);
         }
     }
+
     glm::vec3 getGlobalTarjet(){
         if(this->position!=NULL){
             return glm::vec4(this->tarjet.x, this->tarjet.y, this->tarjet.z, 1)
@@ -80,6 +72,7 @@ public:
             return glm::vec3(0,0,0);
         }
     }
+
     glm::vec3 getGlobalUp(){
         if(this->position!=NULL){
             return glm::vec4(this->up.x, this->up.y, this->up.z, 1)
@@ -89,6 +82,12 @@ public:
         }
     }
 
+public:
+    FGETransformation *position;
+    glm::vec3 tarjet;
+    glm::vec3 up;
+    glm::mat4 matrix;
+
 };
 
 class FGEDataCamera
@@ -97,39 +96,8 @@ public:
     FGEDataCamera(){
         this->projection = new FGEDataCameraProjection();
         this->view = new FGEDataCameraView();
-        this->view->position = new FGETransformation(NULL, NULL);
-        this->view->position->setLocalVectorTranslation(glm::vec3(0, 0.0, 5.0));
-        this->view->position->updateLocalCalculation();
+        init();
 
-        float angle = -45;
-        glm::quat local_quaternion = glm::angleAxis(glm::radians(angle), glm::vec3(1, 0, 0));
-        this->view->position->setLocalQuaternion(local_quaternion);
-        this->view->position->updateLocalCalculation();
-
-        glm::vec3 __t=this->view->position->local_translation;
-        FGEConsole::print("m_local_translation position", __t);
-
-        glm::mat4 _m = this->view->position->getGlobalTransformation();
-        FGEConsole::print("_m", _m);
-
-        glm::vec4 __f = glm::vec4(0,0,0,1)*_m;
-        FGEConsole::print("mmmm position", __f);
-
-        this->view->tarjet = glm::vec3(0.0f, 0.0f, 0.0f);
-        this->view->up = glm::vec3(0.0f, 1.0f, 0.0f);
-
-        // تعيين القيم الأولية للإسقاط
-        this->projection->is_perspective = true; // أو false حسب نوع الإسقاط الأولي
-        this->projection->perspective.fovy = 70.0f; // زاوية الرؤية الأولية
-        this->projection->perspective.aspect = 16.0f / 9.0f; // نسبة العرض إلى الارتفاع
-        this->projection->perspective.near = 0.1f; // المستوى القريب
-        this->projection->perspective.far = 100.0f; // المستوى البعيد
-        this->projection->matrix = glm::perspective(glm::radians(this->projection->perspective.fovy), this->projection->perspective.aspect, this->projection->perspective.near, this->projection->perspective.far);
-
-        this->projection->scaleFactor = 1.0f; // معامل الزووم الأولي
-
-        glm::vec3 ___v=this->view->getGlobalPosition();
-        FGEConsole::print("qqqsssq position", ___v);
     }
     ~FGEDataCamera(){
         delete this->projection;
@@ -138,13 +106,17 @@ public:
     void init()
     {
 
-        float angle = -60;
+        this->view->position = new FGETransformation(NULL, NULL);
+        this->view->position->setLocalVectorTranslation(0, 0.0, 5.0);
+        this->view->position->updateLocalCalculation();
+
+        float angle = 0;
         glm::quat local_quaternion = glm::angleAxis(glm::radians(angle), glm::vec3(1, 0, 0));
         this->view->position->setLocalQuaternion(local_quaternion);
         this->view->position->updateLocalCalculation();
 
 
-        this->view->tarjet = glm::vec3(0.0f, 0.0f, -7.07f);
+        this->view->tarjet = glm::vec3(0.0f, 0.0f, -5.0f);
         this->view->up = glm::vec3(0.0f, 1.0f, 0.0f);
 
         //glm::vec3 position = this->view->position->getVector3GlobalTransformation();
@@ -200,7 +172,9 @@ public:
         }
         return false;
     }
-    float width, height;
+
+public:
+    float screenWidth, screenHeight;
 
     FGEDataCameraProjection *projection;
     FGEDataCameraView *view;

@@ -144,12 +144,9 @@ class FGEGizmos
 {
 public:
     FGEGizmos(OpenGLFunctions *f);
+    void setDataCamera(FGEDataCamera *data_camera);
 
-    FGEGizmoConstraintAxis *constraint_axis ;
-    FGEGizmosTranslation *gizmos_translation;
-    FGEGizmosRotation *gizmos_rotation;
-    //FGEGizmosScale *gizmos_scale ;
-    FGEDrawGizmoScale *draw_gizmos_scale ;
+
 
     bool pressMouse(OpenGLFunctions *f, glm::vec2 &cursor, FGETransformation *transformation, QOpenGLContext *oglc, FGERenderTarget *render_target, bool pose=true);
     bool moveMouse(OpenGLFunctions *f, glm::vec2 &cursor, FGETransformation *transformation, bool pose=true);
@@ -220,6 +217,8 @@ public:
 
     int WIDTH, HEIGHT;
     bool is_perspective;
+    FGEDataCamera *data_camera;
+
     glm::mat4 view;
     glm::mat4 projection;
     float scaleFactor;
@@ -229,6 +228,14 @@ public:
     FGESUBSelectedTransformationMode *transforma_orientation;
 
     glm::vec3 gizoms_pgw;//gizoms_position_gloabl_world;
+
+    FGEGizmoConstraintAxis *constraint_axis ;
+    FGEGizmosTranslation *gizmos_translation;
+    FGEGizmosRotation *gizmos_rotation;
+    //FGEGizmosScale *gizmos_scale ;
+    FGEDrawGizmoScale *draw_gizmos_scale ;
+
+
 private:
     int transforma_type;
     int saved_transforma_type;

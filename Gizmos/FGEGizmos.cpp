@@ -13,6 +13,12 @@ FGEGizmos::FGEGizmos(OpenGLFunctions *f)
     //this->selection_gizmos_scale = new FGESelectionGizmoScale(f, this->constraint_axis, this->transforma_orientation);
 
     this->transforma_type = 0;
+    this->data_camera = NULL;
+}
+
+void FGEGizmos::setDataCamera(FGEDataCamera *data_camera)
+{
+    this->data_camera = data_camera;
 }
 
 void FGEGizmos::setTransformaType(int t_t)
@@ -77,6 +83,7 @@ bool FGEGizmos::restorTransformationType()
 void FGEGizmos::drawGizmo(OpenGLFunctions *f, FGETransformation *transformation, QPainter &painter){
     //setView(mv);
 
+    if(data_camera==NULL) return;
 
     if(isTranslation()){
 
@@ -85,23 +92,23 @@ void FGEGizmos::drawGizmo(OpenGLFunctions *f, FGETransformation *transformation,
                         f,
                         &painter,
                         transformation,
-                        this->view,
-                        this->projection,
-                        this->scaleFactor,
-                        this->is_perspective,
-                        this->WIDTH,
-                        this->HEIGHT
+                        data_camera->view,
+                        data_camera->projection,
+                        data_camera->projection->scaleFactor,
+                        data_camera->projection->is_perspective,
+                        data_camera->screenWidth,
+                        data_camera->screenHeight
             );
         }else{
             gizmos_translation->draw(
                         f,
                         transformation,
-                        this->view,
-                        this->projection,
-                        this->scaleFactor,
-                        this->is_perspective,
-                        this->WIDTH,
-                        this->HEIGHT
+                        data_camera->view,
+                        data_camera->projection,
+                        data_camera->projection->scaleFactor,
+                        data_camera->projection->is_perspective,
+                        data_camera->screenWidth,
+                        data_camera->screenHeight
             );
         }
     }else if(isRotation()){
@@ -110,23 +117,23 @@ void FGEGizmos::drawGizmo(OpenGLFunctions *f, FGETransformation *transformation,
                         f,
                         &painter,
                         transformation,
-                        this->view,
-                        this->projection,
-                        this->scaleFactor,
-                        this->is_perspective,
-                        this->WIDTH,
-                        this->HEIGHT
+                        data_camera->view,
+                        data_camera->projection,
+                        data_camera->projection->scaleFactor,
+                        data_camera->projection->is_perspective,
+                        data_camera->screenWidth,
+                        data_camera->screenHeight
             );
         }else{
             gizmos_rotation->draw(
                         f,
                         transformation,
-                        this->view,
-                        this->projection,
-                        this->scaleFactor,
-                        this->is_perspective,
-                        this->WIDTH,
-                        this->HEIGHT
+                        data_camera->view,
+                        data_camera->projection,
+                        data_camera->projection->scaleFactor,
+                        data_camera->projection->is_perspective,
+                        data_camera->screenWidth,
+                        data_camera->screenHeight
             );
         }
     }else if(isScale()){
@@ -134,28 +141,30 @@ void FGEGizmos::drawGizmo(OpenGLFunctions *f, FGETransformation *transformation,
             draw_gizmos_scale->drawAxes(
                         f,
                         transformation,
-                        this->view,
-                        this->projection,
-                        this->scaleFactor,
-                        this->is_perspective,
-                        this->WIDTH,
-                        this->HEIGHT
+                        data_camera->view,
+                        data_camera->projection,
+                        data_camera->projection->scaleFactor,
+                        data_camera->projection->is_perspective,
+                        data_camera->screenWidth,
+                        data_camera->screenHeight
             );
         }else{
             draw_gizmos_scale->draw(
                         f,
                         transformation,
-                        this->view,
-                        this->projection,
-                        this->scaleFactor,
-                        this->is_perspective,
-                        this->WIDTH,
-                        this->HEIGHT
+                        data_camera->view,
+                        data_camera->projection,
+                        data_camera->projection->scaleFactor,
+                        data_camera->projection->is_perspective,
+                        data_camera->screenWidth,
+                        data_camera->screenHeight
             );
         }
     }
 }
 bool FGEGizmos::pressMouse(OpenGLFunctions *f, glm::vec2 &cursor, FGETransformation *transformation, QOpenGLContext *oglc, FGERenderTarget *render_target, bool pose){
+
+    if(data_camera==NULL) return;
 
     if(isTranslation()){
         gizmos_translation->cursor_event.press_select = cursor;
@@ -165,14 +174,14 @@ bool FGEGizmos::pressMouse(OpenGLFunctions *f, glm::vec2 &cursor, FGETransformat
                     oglc,
                     f,
                     transformation,
-                    this->view,
-                    this->projection,
-                    this->scaleFactor,
-                    this->is_perspective,
+                    data_camera->view,
+                    data_camera->projection,
+                    data_camera->projection->scaleFactor,
+                    data_camera->projection->is_perspective,
                     cursor[0],
                     cursor[1],
-                    this->WIDTH,
-                    this->HEIGHT,
+                    data_camera->screenWidth,
+                    data_camera->screenHeight,
                     pose
         )){
             return true;
@@ -187,14 +196,14 @@ bool FGEGizmos::pressMouse(OpenGLFunctions *f, glm::vec2 &cursor, FGETransformat
                     oglc,
                     f,
                     transformation,
-                    this->view,
-                    this->projection,
-                    this->scaleFactor,
-                    this->is_perspective,
+                    data_camera->view,
+                    data_camera->projection,
+                    data_camera->projection->scaleFactor,
+                    data_camera->projection->is_perspective,
                     cursor[0],
                     cursor[1],
-                    this->WIDTH,
-                    this->HEIGHT
+                    data_camera->screenWidth,
+                    data_camera->screenHeight
         )){
             return true;
         }else{
@@ -208,14 +217,14 @@ bool FGEGizmos::pressMouse(OpenGLFunctions *f, glm::vec2 &cursor, FGETransformat
                     oglc,
                     f,
                     transformation,
-                    this->view,
-                    this->projection,
-                    this->scaleFactor,
-                    this->is_perspective,
+                    data_camera->view,
+                    data_camera->projection,
+                    data_camera->projection->scaleFactor,
+                    data_camera->projection->is_perspective,
                     cursor[0],
                     cursor[1],
-                    this->WIDTH,
-                    this->HEIGHT
+                    data_camera->screenWidth,
+                    data_camera->screenHeight
         )){
             return true;
         }else{
@@ -227,6 +236,8 @@ bool FGEGizmos::pressMouse(OpenGLFunctions *f, glm::vec2 &cursor, FGETransformat
 
 bool FGEGizmos::moveMouse(OpenGLFunctions *f, glm::vec2 &cursor, FGETransformation *transformation, bool pose){
 
+    if(data_camera==NULL) return;
+
     if(isTranslationOnScreen()){
 
         gizmos_translation->cursor_event.move_select = cursor;
@@ -236,13 +247,13 @@ bool FGEGizmos::moveMouse(OpenGLFunctions *f, glm::vec2 &cursor, FGETransformati
         gizmos_translation->xy_move_selected = true;
         gizmos_translation->updateAxesTranslation(
                     transformation,
-                    view,
-                    projection,
-                    scaleFactor,
-                    is_perspective,
+                    data_camera->view,
+                    data_camera->projection,
+                    data_camera->projection->scaleFactor,
+                    data_camera->projection->is_perspective,
                     cursor,
-                    WIDTH,
-                    HEIGHT,
+                    data_camera->screenWidth,
+                    data_camera->screenHeight,
                     pose
         );
         //gizmos_translation->sel_transf_mode->setMode(_mode);
@@ -256,13 +267,13 @@ bool FGEGizmos::moveMouse(OpenGLFunctions *f, glm::vec2 &cursor, FGETransformati
 
             gizmos_translation->updateAxesTranslation(
                         transformation,
-                        view,
-                        projection,
-                        scaleFactor,
-                        is_perspective,
+                        data_camera->view,
+                        data_camera->projection,
+                        data_camera->projection->scaleFactor,
+                        data_camera->projection->is_perspective,
                         cursor,
-                        WIDTH,
-                        HEIGHT,
+                        data_camera->screenWidth,
+                        data_camera->screenHeight,
                         pose
             );
 
@@ -277,14 +288,14 @@ bool FGEGizmos::moveMouse(OpenGLFunctions *f, glm::vec2 &cursor, FGETransformati
             gizmos_rotation->updateAxeRotation(
                         f,
                         transformation,
-                        view,
-                        projection,
-                        scaleFactor,
-                        is_perspective,
+                        data_camera->view,
+                        data_camera->projection,
+                        data_camera->projection->scaleFactor,
+                        data_camera->projection->is_perspective,
                         cursor[0],
                         cursor[1],
-                        WIDTH,
-                        HEIGHT
+                        data_camera->screenWidth,
+                        data_camera->screenHeight
             );
 
             return true;
@@ -297,13 +308,13 @@ bool FGEGizmos::moveMouse(OpenGLFunctions *f, glm::vec2 &cursor, FGETransformati
             //gizmos_scale->cursor_event.move_select = cursor;
             draw_gizmos_scale->updateTransformation(
                         transformation,
-                        view,
-                        projection,
-                        scaleFactor,
-                        is_perspective,
+                        data_camera->view,
+                        data_camera->projection,
+                        data_camera->projection->scaleFactor,
+                        data_camera->projection->is_perspective,
                         cursor,
-                        WIDTH,
-                        HEIGHT
+                        data_camera->screenWidth,
+                        data_camera->screenHeight
             );
 
             return true;
@@ -316,6 +327,8 @@ bool FGEGizmos::moveMouse(OpenGLFunctions *f, glm::vec2 &cursor, FGETransformati
 }
 
 bool FGEGizmos::releazeMouse(){
+
+    if(data_camera==NULL) return;
 
     qDebug()<< "<<<<<<<<<";
     if(isTranslation()){
