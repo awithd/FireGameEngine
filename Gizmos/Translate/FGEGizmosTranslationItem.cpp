@@ -29,8 +29,8 @@ FGEGizmosTranslationItem::FGEGizmosTranslationItem(OpenGLFunctions *f)
     cone.setNormal(false);
 
     // MESH
-    cone.getBuffer(mesh_cone, 0.00016, 0.0005, 10, false, object_count_triangle);
-    transformation.translate3D(mesh_cone, 0, 3, 0.0, 0.0015, 0.0);
+    cone.getBuffer(mesh_cone, 0.0016, 0.005, 10, false, object_count_triangle);
+    transformation.translate3D(mesh_cone, 0, 3, 0.0, 0.015, 0.0);
     //transformation.scale3D(__cone, 0, 9, 0.5, 0.5, 0.5);
 
     f->glGenVertexArrays(1, &vao_cone);
@@ -43,7 +43,7 @@ FGEGizmosTranslationItem::FGEGizmosTranslationItem(OpenGLFunctions *f)
     f->glBindBuffer(GL_ARRAY_BUFFER, 0);
     f->glBindVertexArray(0);
 
-    line.setVertex(glm::vec3(0.0,0.0,0.0),glm::vec3(0.0,0.0015,0.0));
+    line.setVertex(glm::vec3(0.0,0.0,0.0),glm::vec3(0.0,0.015,0.0));
     line.getBuffer(mesh_line);
 
     f->glGenVertexArrays(1, &vao_line);
@@ -75,8 +75,8 @@ FGEGizmosTranslationItem::FGEGizmosTranslationItem(OpenGLFunctions *f)
     f->glBindVertexArray(0);
 
 
-    plane.getBuffer(mesh_plane, 0.0005, 1, 0.0005, 1, mpcv, 1);
-    //transformation.translate3D(mesh_cone, 0, 3, 0.0, 0.0015, 0.0);
+    plane.getBuffer(mesh_plane, 0.005, 1, 0.005, 1, mpcv, 1);
+    transformation.translate3D(mesh_plane, 0, 3, 0.0050, 0.0000, -0.0050);
     //transformation.scale3D(__cone, 0, 9, 0.5, 0.5, 0.5);
 
     f->glGenVertexArrays(1, &vao_plane);
@@ -105,7 +105,7 @@ FGEGizmosTranslationItem::FGEGizmosTranslationItem(OpenGLFunctions *f)
 
 
     FGE3DGeometrySphere sphere;
-    sphere.getBuffer(mesh_sphere, 0.0003, 60, 60, false, sphere_count_triangle);
+    sphere.getBuffer(mesh_sphere, 0.003, 60, 60, false, sphere_count_triangle);
 
     f->glGenVertexArrays(1, &vao_sphere);
     f->glGenBuffers(1, &vbo_sphere);

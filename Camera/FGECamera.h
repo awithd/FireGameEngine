@@ -68,7 +68,7 @@ public:
     //float screenHeight /* ارتفاع النافذة */;
 
     FGEDataCamera *m_camera;
-
+//
     bool m_isDragging;
     bool m_isZooming;
     bool m_isRotating;

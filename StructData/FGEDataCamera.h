@@ -140,7 +140,7 @@ public:
         this->projection->perspective.far = 100.0f; // المستوى البعيد
         this->projection->matrix = glm::perspective(glm::radians(this->projection->perspective.fovy), this->projection->perspective.aspect, this->projection->perspective.near, this->projection->perspective.far);
 
-        this->projection->scaleFactor = 1.0f; // معامل الزووم الأولي
+        this->projection->scaleFactor = 10.0f; // معامل الزووم الأولي
 
     }
     void updateProjection(){

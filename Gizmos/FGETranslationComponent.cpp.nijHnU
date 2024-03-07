@@ -1,0 +1,1388 @@
+#include "FGETranslationComponent.h"
+
+FGETranslationComponent::FGETranslationComponent()
+{
+    createCircle(0.005);
+    createMeshTranslate(0.00036, 0.00006);
+    createMeshXYZTranslateForSelection(0.0016, 0.0003);
+    initShader();
+    initBuffer();
+    show = true;
+}
+FGETranslationComponent::~FGETranslationComponent()
+{
+    glDeleteVertexArrays(1, &vao_a);
+    glDeleteVertexArrays(1, &vao_ya);
+    glDeleteVertexArrays(1, &vao_za);
+    glDeleteVertexArrays(1, &vao_a);
+    glDeleteVertexArrays(1, &vao_c);
+    glDeleteBuffers(1, &vbo_xa);
+    glDeleteBuffers(1, &vbo_ya);
+    glDeleteBuffers(1, &vbo_za);
+    glDeleteBuffers(1, &vbo_a);
+    glDeleteBuffers(1, &vbo_c);
+    glDeleteProgram(shaderProgram_c_translate);
+    glDeleteProgram(shaderProgram_xyz_translate);
+    glDeleteProgram(shaderProgram_selection);
+
+}
+
+void FGETranslationComponent::initBuffer(){
+    glGenVertexArrays(1, &vao_a);
+    glGenBuffers(1, &vbo_a);
+    glGenVertexArrays(1, &vao_c);
+    glGenBuffers(1, &vbo_c);
+
+    qDebug() << " sizeof(xyz_translate) " << sizeof(xyz_translate);
+
+    glBindVertexArray(vao_a);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_a);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(xyz_translate), xyz_translate, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    qDebug() << " sizeof(circle_translate) " << sizeof(circle_translate);
+
+    glBindVertexArray(vao_c);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_c);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(circle_translate), circle_translate, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+
+
+    glGenVertexArrays(1, &vao_xa);
+    glGenVertexArrays(1, &vao_ya);
+    glGenVertexArrays(1, &vao_za);
+    glGenBuffers(1, &vbo_xa);
+    glGenBuffers(1, &vbo_ya);
+    glGenBuffers(1, &vbo_za);
+
+    glBindVertexArray(vao_xa);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_xa);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(x_translate), x_translate, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    glBindVertexArray(vao_ya);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_ya);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(y_translate), y_translate, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    glBindVertexArray(vao_za);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_za);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(z_translate), z_translate, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
+
+void FGETranslationComponent::createCircle(float r)
+{
+    for (int ii = 0; ii < 36; ii++)   {
+        float theta = 2.0f * 3.1415926f * float(ii) / float(36);//get the current angle
+        float x = r * cos(theta);//calculate the x component
+        float y = r * sin(theta);//calculate the y component
+        circle_translate[ii*3] = x;
+        circle_translate[ii*3+1] = y;
+        circle_translate[ii*3+2] = 0;
+    }
+}
+
+void FGETranslationComponent::createMeshTranslate(float r, float k)
+{
+
+    int d = 0;
+    int i=0;
+
+    float w_a = 0.004, w_c = 0.001;
+
+    float _theta = 2.0f * 3.1415926f * float(0) / float(8);//get the current angle
+    float _x = r * cos(_theta);//calculate the x component
+    float _y = r * sin(_theta);//calculate the y component
+
+    float o_x = _x, o_y = _y, x, y;
+
+    for (int ii = 1; ii < 8; ii++)   {
+
+        float theta = 2.0f * 3.1415926f * float(ii) / float(8);//get the current angle
+        x = r * cos(theta);//calculate the x component
+        y = r * sin(theta);//calculate the y component
+
+        xyz_translate[d+ii*18]   = w_a;
+        xyz_translate[d+ii*18+1] = _x;
+        xyz_translate[d+ii*18+2] = _y;
+
+        xyz_translate[d+ii*18+3] = 1.0;
+        xyz_translate[d+ii*18+4] = 0.0;
+        xyz_translate[d+ii*18+5] = 0.0;
+
+        xyz_translate[d+ii*18+6] = w_a+w_c;
+        xyz_translate[d+ii*18+7] = 0.0;
+        xyz_translate[d+ii*18+8] = 0.0;
+
+        xyz_translate[d+ii*18+9] = 1.0;
+        xyz_translate[d+ii*18+10] = 0.0;
+        xyz_translate[d+ii*18+11] = 0.0;
+
+        xyz_translate[d+ii*18+12] = w_a;
+        xyz_translate[d+ii*18+13] = x;
+        xyz_translate[d+ii*18+14] = y;
+
+        xyz_translate[d+ii*18+15] = 1.0;
+        xyz_translate[d+ii*18+16] = 0.0;
+        xyz_translate[d+ii*18+17] = 0.0;
+
+        _x = x;
+        _y = y;
+    }
+
+    xyz_translate[d+0] = w_a;
+    xyz_translate[d+1] = _x;
+    xyz_translate[d+2] = _y;
+
+    xyz_translate[d+3] = 1.0;
+    xyz_translate[d+4] = 0.0;
+    xyz_translate[d+5] = 0.0;
+
+    xyz_translate[d+6] = w_a+w_c;
+    xyz_translate[d+7] = 0.0;
+    xyz_translate[d+8] = 0.0;
+
+    xyz_translate[d+9]  = 1.0;
+    xyz_translate[d+10] = 0.0;
+    xyz_translate[d+11] = 0.0;
+
+    xyz_translate[d+12] = w_a;
+    xyz_translate[d+13] = o_x;
+    xyz_translate[d+14] = o_y;
+
+    xyz_translate[d+15] = 1.0;
+    xyz_translate[d+16] = 0.0;
+    xyz_translate[d+17] = 0.0;
+
+    d = 144;
+
+    _theta = 2.0f * 3.1415926f * float(0) / float(8);//get the current angle
+    _x = k * cos(_theta);//calculate the x component
+    _y = k * sin(_theta);//calculate the y component
+
+    o_x = _x;
+    o_y = _y;
+
+    for (int ii = 1; ii < 8; ii++)   {
+        float theta = 2.0f * 3.1415926f * float(ii) / float(8);//get the current angle
+        x = k * cos(theta);//calculate the x component
+        y = k * sin(theta);//calculate the y component
+
+        xyz_translate[d+ii*36]   = 0.0;
+        xyz_translate[d+ii*36+1] = _x;
+        xyz_translate[d+ii*36+2] = _y;
+
+        xyz_translate[d+ii*36+3] = 1.0;
+        xyz_translate[d+ii*36+4] = 0.0;
+        xyz_translate[d+ii*36+5] = 0.0;
+
+        xyz_translate[d+ii*36+6] = w_a;
+        xyz_translate[d+ii*36+7] = _x;
+        xyz_translate[d+ii*36+8] = _y;
+
+        xyz_translate[d+ii*36+9] = 1.0;
+        xyz_translate[d+ii*36+10] = 0.0;
+        xyz_translate[d+ii*36+11] = 0.0;
+
+        xyz_translate[d+ii*36+12] = 0.0;
+        xyz_translate[d+ii*36+13] = x;
+        xyz_translate[d+ii*36+14] = y;
+
+        xyz_translate[d+ii*36+15] = 1.0;
+        xyz_translate[d+ii*36+16] = 0.0;
+        xyz_translate[d+ii*36+17] = 0.0;
+
+
+        ////////////////////////
+
+        xyz_translate[d+ii*36+18] = 0.0;
+        xyz_translate[d+ii*36+19] = x;
+        xyz_translate[d+ii*36+20] = y;
+
+
+        xyz_translate[d+ii*36+21] = 1.0;
+        xyz_translate[d+ii*36+22] = 0.0;
+        xyz_translate[d+ii*36+23] = 0.0;
+
+        xyz_translate[d+ii*36+24] = w_a;
+        xyz_translate[d+ii*36+25] = x;
+        xyz_translate[d+ii*36+26] = y;
+
+        xyz_translate[d+ii*36+27] = 1.0;
+        xyz_translate[d+ii*36+28] = 0.0;
+        xyz_translate[d+ii*36+29] = 0.0;
+
+        xyz_translate[d+ii*36+30] = w_a;
+        xyz_translate[d+ii*36+31] = _x;
+        xyz_translate[d+ii*36+32] = _y;
+
+        xyz_translate[d+ii*36+33] = 1.0;
+        xyz_translate[d+ii*36+34] = 0.0;
+        xyz_translate[d+ii*36+35] = 0.0;
+
+        _x = x;
+        _y = y;
+    }
+
+    xyz_translate[d] = 0.0;
+    xyz_translate[d+1] = _x;
+    xyz_translate[d+2] = _y;
+
+    xyz_translate[d+3] = 1.0;
+    xyz_translate[d+4] = 0.0;
+    xyz_translate[d+5] = 0.0;
+
+    xyz_translate[d+6] = w_a;
+    xyz_translate[d+7] = _x;
+    xyz_translate[d+8] = _y;
+
+    xyz_translate[d+9]  = 1.0;
+    xyz_translate[d+10] = 0.0;
+    xyz_translate[d+11] = 0.0;
+
+    xyz_translate[d+12] = 0.0;
+    xyz_translate[d+13] = o_x;
+    xyz_translate[d+14] = o_y;
+
+    xyz_translate[d+15] = 1.0;
+    xyz_translate[d+16] = 0.0;
+    xyz_translate[d+17] = 0.0;
+
+    /////
+
+    xyz_translate[d+18] = 0.0;
+    xyz_translate[d+19] = _x;
+    xyz_translate[d+20] = _y;
+
+    xyz_translate[d+21] = 1.0;
+    xyz_translate[d+22] = 0.0;
+    xyz_translate[d+23] = 0.0;
+
+    xyz_translate[d+24] = w_a;
+    xyz_translate[d+25] = _x;
+    xyz_translate[d+26] = _y;
+
+    xyz_translate[d+27] = 1.0;
+    xyz_translate[d+28] = 0.0;
+    xyz_translate[d+29] = 0.0;
+
+    xyz_translate[d+30] = 0.0;
+    xyz_translate[d+31] = o_x;
+    xyz_translate[d+32] = o_y;
+
+    xyz_translate[d+33] = 1.0;
+    xyz_translate[d+34] = 0.0;
+    xyz_translate[d+35] = 0.0;
+
+
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    d = d+288;
+
+    _theta = 2.0f * 3.1415926f * float(0) / float(8);//get the current angle
+    _x = r * cos(_theta);//calculate the x component
+    _y = r * sin(_theta);//calculate the y component
+
+    o_x = _x;
+    o_y = _y;
+
+    for (int ii = 1; ii < 8; ii++)   {
+
+        float theta = 2.0f * 3.1415926f * float(ii) / float(8);//get the current angle
+        x = r * cos(theta);//calculate the x component
+        y = r * sin(theta);//calculate the y component
+
+        xyz_translate[d+ii*18]   = _x;
+        xyz_translate[d+ii*18+1] = w_a;
+        xyz_translate[d+ii*18+2] = _y;
+
+        xyz_translate[d+ii*18+3] = 0.0;
+        xyz_translate[d+ii*18+4] = 1.0;
+        xyz_translate[d+ii*18+5] = 0.0;
+
+        xyz_translate[d+ii*18+6] = 0.0;
+        xyz_translate[d+ii*18+7] = w_a+w_c;
+        xyz_translate[d+ii*18+8] = 0.0;
+
+        xyz_translate[d+ii*18+9] = 0.0;
+        xyz_translate[d+ii*18+10] = 1.0;
+        xyz_translate[d+ii*18+11] = 0.0;
+
+        xyz_translate[d+ii*18+12] = x;
+        xyz_translate[d+ii*18+13] = w_a;
+        xyz_translate[d+ii*18+14] = y;
+
+        xyz_translate[d+ii*18+15] = 0.0;
+        xyz_translate[d+ii*18+16] = 1.0;
+        xyz_translate[d+ii*18+17] = 0.0;
+
+        _x = x;
+        _y = y;
+    }
+
+    xyz_translate[d+0] = _x;
+    xyz_translate[d+1] = w_a;
+    xyz_translate[d+2] = _y;
+
+    xyz_translate[d+3] = 0.0;
+    xyz_translate[d+4] = 1.0;
+    xyz_translate[d+5] = 0.0;
+
+    xyz_translate[d+6] = 0.0;
+    xyz_translate[d+7] = w_a+w_c;
+    xyz_translate[d+8] = 0.0;
+
+    xyz_translate[d+9]  = 0.0;
+    xyz_translate[d+10] = 1.0;
+    xyz_translate[d+11] = 0.0;
+
+    xyz_translate[d+12] = o_x;
+    xyz_translate[d+13] = w_a;
+    xyz_translate[d+14] = o_y;
+
+    xyz_translate[d+15] = 0.0;
+    xyz_translate[d+16] = 1.0;
+    xyz_translate[d+17] = 0.0;
+
+    d = d+144;
+    _theta = 2.0f * 3.1415926f * float(0) / float(8);//get the current angle
+    _x = k * cos(_theta);//calculate the x component
+    _y = k * sin(_theta);//calculate the y component
+
+    o_x = _x;
+    o_y = _y;
+    for (int ii = 1; ii < 8; ii++)   {
+        float theta = 2.0f * 3.1415926f * float(ii) / float(8);//get the current angle
+        x = k * cos(theta);//calculate the x component
+        y = k * sin(theta);//calculate the y component
+
+        xyz_translate[d+ii*36]   = _x;
+        xyz_translate[d+ii*36+1] = 0.0;
+        xyz_translate[d+ii*36+2] = _y;
+
+        xyz_translate[d+ii*36+3] = 0.0;
+        xyz_translate[d+ii*36+4] = 1.0;
+        xyz_translate[d+ii*36+5] = 0.0;
+
+        xyz_translate[d+ii*36+6] = _x;
+        xyz_translate[d+ii*36+7] = w_a;
+        xyz_translate[d+ii*36+8] = _y;
+
+        xyz_translate[d+ii*36+9] = 0.0;
+        xyz_translate[d+ii*36+10] = 1.0;
+        xyz_translate[d+ii*36+11] = 0.0;
+
+        xyz_translate[d+ii*36+12] = x;
+        xyz_translate[d+ii*36+13] = 0.0;
+        xyz_translate[d+ii*36+14] = y;
+
+        xyz_translate[d+ii*36+15] = 0.0;
+        xyz_translate[d+ii*36+16] = 1.0;
+        xyz_translate[d+ii*36+17] = 0.0;
+
+
+        ////////////////////////
+
+        xyz_translate[d+ii*36+18] = x;
+        xyz_translate[d+ii*36+19] = 0.0;
+        xyz_translate[d+ii*36+20] = y;
+
+
+        xyz_translate[d+ii*36+21] = 0.0;
+        xyz_translate[d+ii*36+22] = 1.0;
+        xyz_translate[d+ii*36+23] = 0.0;
+
+        xyz_translate[d+ii*36+24] = x;
+        xyz_translate[d+ii*36+25] = w_a;
+        xyz_translate[d+ii*36+26] = y;
+
+        xyz_translate[d+ii*36+27] = 0.0;
+        xyz_translate[d+ii*36+28] = 1.0;
+        xyz_translate[d+ii*36+29] = 0.0;
+
+        xyz_translate[d+ii*36+30] = _x;
+        xyz_translate[d+ii*36+31] = w_a;
+        xyz_translate[d+ii*36+32] = _y;
+
+        xyz_translate[d+ii*36+33] = 0.0;
+        xyz_translate[d+ii*36+34] = 1.0;
+        xyz_translate[d+ii*36+35] = 0.0;
+
+        _x = x;
+        _y = y;
+    }
+
+    xyz_translate[d] = _x;
+    xyz_translate[d+1] = 0.0;
+    xyz_translate[d+2] = _y;
+
+    xyz_translate[d+3] = 0.0;
+    xyz_translate[d+4] = 1.0;
+    xyz_translate[d+5] = 0.0;
+
+    xyz_translate[d+6] = _x;
+    xyz_translate[d+7] = w_a;
+    xyz_translate[d+8] = _y;
+
+    xyz_translate[d+9]  = 0.0;
+    xyz_translate[d+10] = 1.0;
+    xyz_translate[d+11] = 0.0;
+
+    xyz_translate[d+12] = o_x;
+    xyz_translate[d+13] = 0.0;
+    xyz_translate[d+14] = o_y;
+
+    xyz_translate[d+15] = 0.0;
+    xyz_translate[d+16] = 1.0;
+    xyz_translate[d+17] = 0.0;
+
+    /////
+
+    xyz_translate[d+18] = _x;
+    xyz_translate[d+19] = 0.0;
+    xyz_translate[d+20] = _y;
+
+    xyz_translate[d+21] = 0.0;
+    xyz_translate[d+22] = 1.0;
+    xyz_translate[d+23] = 0.0;
+
+    xyz_translate[d+24] = _x;
+    xyz_translate[d+25] = w_a;
+    xyz_translate[d+26] = _y;
+
+    xyz_translate[d+27]  = 0.0;
+    xyz_translate[d+28] = 1.0;
+    xyz_translate[d+29] = 0.0;
+
+    xyz_translate[d+30] = o_x;
+    xyz_translate[d+31] = 0.0;
+    xyz_translate[d+32] = o_y;
+
+    xyz_translate[d+33] = 0.0;
+    xyz_translate[d+34] = 1.0;
+    xyz_translate[d+35] = 0.0;
+
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    d = d+288;
+
+    _theta = 2.0f * 3.1415926f * float(0) / float(8);//get the current angle
+    _x = r * cos(_theta);//calculate the x component
+    _y = r * sin(_theta);//calculate the y component
+
+    o_x = _x;
+    o_y = _y;
+
+    for (int ii = 1; ii < 8; ii++)   {
+
+        float theta = 2.0f * 3.1415926f * float(ii) / float(8);//get the current angle
+        x = r * cos(theta);//calculate the x component
+        y = r * sin(theta);//calculate the y component
+
+        xyz_translate[d+ii*18]   = _x;
+        xyz_translate[d+ii*18+1] = _y;
+        xyz_translate[d+ii*18+2] = w_a;
+
+        xyz_translate[d+ii*18+3] = 0.0;
+        xyz_translate[d+ii*18+4] = 0.0;
+        xyz_translate[d+ii*18+5] = 1.0;
+
+        xyz_translate[d+ii*18+6] = 0.0;
+        xyz_translate[d+ii*18+7] = 0.0;
+        xyz_translate[d+ii*18+8] = w_a+w_c;
+
+        xyz_translate[d+ii*18+9] = 0.0;
+        xyz_translate[d+ii*18+10] = 0.0;
+        xyz_translate[d+ii*18+11] = 1.0;
+
+        xyz_translate[d+ii*18+12] = x;
+        xyz_translate[d+ii*18+13] = y;
+        xyz_translate[d+ii*18+14] = w_a;
+
+        xyz_translate[d+ii*18+15] = 0.0;
+        xyz_translate[d+ii*18+16] = 0.0;
+        xyz_translate[d+ii*18+17] = 1.0;
+
+        _x = x;
+        _y = y;
+    }
+
+    xyz_translate[d+0] = _x;
+    xyz_translate[d+1] = _y;
+    xyz_translate[d+2] = w_a;
+
+    xyz_translate[d+3] = 0.0;
+    xyz_translate[d+4] = 0.0;
+    xyz_translate[d+5] = 1.0;
+
+    xyz_translate[d+6] = 0.0;
+    xyz_translate[d+7] = 0.0;
+    xyz_translate[d+8] = w_a+w_c;
+
+    xyz_translate[d+9]  = 0.0;
+    xyz_translate[d+10] = 0.0;
+    xyz_translate[d+11] = 1.0;
+
+    xyz_translate[d+12] = o_x;
+    xyz_translate[d+13] = o_y;
+    xyz_translate[d+14] = w_a;
+
+    xyz_translate[d+15] = 0.0;
+    xyz_translate[d+16] = 0.0;
+    xyz_translate[d+17] = 1.0;
+
+    d = d+144;
+    _theta = 2.0f * 3.1415926f * float(0) / float(8);//get the current angle
+    _x = k * cos(_theta);//calculate the x component
+    _y = k * sin(_theta);//calculate the y component
+
+    o_x = _x;
+    o_y = _y;
+    for (int ii = 1; ii < 8; ii++)   {
+        float theta = 2.0f * 3.1415926f * float(ii) / float(8);//get the current angle
+        x = k * cos(theta);//calculate the x component
+        y = k * sin(theta);//calculate the y component
+
+        xyz_translate[d+ii*36]   = _x;
+        xyz_translate[d+ii*36+1] = _y;
+        xyz_translate[d+ii*36+2] = 0.0;
+
+        xyz_translate[d+ii*36+3] = 0.0;
+        xyz_translate[d+ii*36+4] = 0.0;
+        xyz_translate[d+ii*36+5] = 1.0;
+
+        xyz_translate[d+ii*36+6] = _x;
+        xyz_translate[d+ii*36+7] = _y;
+        xyz_translate[d+ii*36+8] = w_a;
+
+        xyz_translate[d+ii*36+9] = 0.0;
+        xyz_translate[d+ii*36+10] = 0.0;
+        xyz_translate[d+ii*36+11] = 1.0;
+
+        xyz_translate[d+ii*36+12] = x;
+        xyz_translate[d+ii*36+13] = y;
+        xyz_translate[d+ii*36+14] = 0.0;
+
+        xyz_translate[d+ii*36+15] = 0.0;
+        xyz_translate[d+ii*36+16] = 0.0;
+        xyz_translate[d+ii*36+17] = 1.0;
+
+
+        ////////////////////////
+
+        xyz_translate[d+ii*36+18] = x;
+        xyz_translate[d+ii*36+19] = y;
+        xyz_translate[d+ii*36+20] = 0.0;
+
+
+        xyz_translate[d+ii*36+21] = 0.0;
+        xyz_translate[d+ii*36+22] = 0.0;
+        xyz_translate[d+ii*36+23] = 1.0;
+
+        xyz_translate[d+ii*36+24] = x;
+        xyz_translate[d+ii*36+25] = y;
+        xyz_translate[d+ii*36+26] = w_a;
+
+        xyz_translate[d+ii*36+27] = 0.0;
+        xyz_translate[d+ii*36+28] = 0.0;
+        xyz_translate[d+ii*36+29] = 1.0;
+
+        xyz_translate[d+ii*36+30] = _x;
+        xyz_translate[d+ii*36+31] = _y;
+        xyz_translate[d+ii*36+32] = w_a;
+
+        xyz_translate[d+ii*36+33] = 0.0;
+        xyz_translate[d+ii*36+34] = 0.0;
+        xyz_translate[d+ii*36+35] = 1.0;
+
+        _x = x;
+        _y = y;
+    }
+
+    xyz_translate[d] = _x;
+    xyz_translate[d+1] = _y;
+    xyz_translate[d+2] = 0.0;
+
+    xyz_translate[d+3] = 0.0;
+    xyz_translate[d+4] = 0.0;
+    xyz_translate[d+5] = 1.0;
+
+    xyz_translate[d+6] = _x;
+    xyz_translate[d+7] = _y;
+    xyz_translate[d+8] = w_a;
+
+    xyz_translate[d+9]  = 0.0;
+    xyz_translate[d+10] = 0.0;
+    xyz_translate[d+11] = 1.0;
+
+    xyz_translate[d+12] = o_x;
+    xyz_translate[d+13] = o_y;
+    xyz_translate[d+14] = 0.0;
+
+    xyz_translate[d+15] = 0.0;
+    xyz_translate[d+16] = 0.0;
+    xyz_translate[d+17] = 1.0;
+
+    /////
+
+    xyz_translate[d+18] = _x;
+    xyz_translate[d+19] = _y;
+    xyz_translate[d+20] = 0.0;
+
+    xyz_translate[d+21] = 0.0;
+    xyz_translate[d+22] = 0.0;
+    xyz_translate[d+23] = 1.0;
+
+    xyz_translate[d+24] = _x;
+    xyz_translate[d+25] = _y;
+    xyz_translate[d+26] = w_a;
+
+    xyz_translate[d+27]  = 0.0;
+    xyz_translate[d+28] = 0.0;
+    xyz_translate[d+29] = 1.0;
+
+    xyz_translate[d+30] = o_x;
+    xyz_translate[d+31] = o_y;
+    xyz_translate[d+32] = 0.0;
+
+    xyz_translate[d+33] = 0.0;
+    xyz_translate[d+34] = 0.0;
+    xyz_translate[d+35] = 1.0;
+
+}
+
+void FGETranslationComponent::createMeshXYZTranslateForSelection(float r, float k)
+{
+
+    int d = 0;
+
+    float w_a = 0.02, w_c = 0.007;
+
+    float _theta = 2.0f * 3.1415926f * float(0) / float(8);//get the current angle
+    float _x = r * cos(_theta);//calculate the x component
+    float _y = r * sin(_theta);//calculate the y component
+
+    float o_x = _x, o_y = _y, x, y;
+
+    for (int ii = 1; ii < 8; ii++)   {
+
+        float theta = 2.0f * 3.1415926f * float(ii) / float(8);//get the current angle
+        x = r * cos(theta);//calculate the x component
+        y = r * sin(theta);//calculate the y component
+
+        x_translate[ii*9]   = w_a;
+        x_translate[ii*9+1] = _x;
+        x_translate[ii*9+2] = _y;
+
+        x_translate[ii*9+3] = w_a+w_c;
+        x_translate[ii*9+4] = 0.0;
+        x_translate[ii*9+5] = 0.0;
+
+
+        x_translate[ii*9+6] = w_a;
+        x_translate[ii*9+7] = x;
+        x_translate[ii*9+8] = y;
+
+        _x = x;
+        _y = y;
+    }
+
+    x_translate[0] = w_a;
+    x_translate[1] = _x;
+    x_translate[2] = _y;
+
+
+    x_translate[3] = w_a+w_c;
+    x_translate[4] = 0.0;
+    x_translate[5] = 0.0;
+
+
+    x_translate[6] = w_a;
+    x_translate[7] = o_x;
+    x_translate[8] = o_y;
+
+    d = 72;
+
+    _theta = 2.0f * 3.1415926f * float(0) / float(8);//get the current angle
+    _x = k * cos(_theta);//calculate the x component
+    _y = k * sin(_theta);//calculate the y component
+
+    o_x = _x;
+    o_y = _y;
+
+    for (int ii = 1; ii < 8; ii++)   {
+        float theta = 2.0f * 3.1415926f * float(ii) / float(8);//get the current angle
+        x = k * cos(theta);//calculate the x component
+        y = k * sin(theta);//calculate the y component
+
+        x_translate[d+ii*18]   = 0.0;
+        x_translate[d+ii*18+1] = _x;
+        x_translate[d+ii*18+2] = _y;
+
+        x_translate[d+ii*18+3] = w_a;
+        x_translate[d+ii*18+4] = _x;
+        x_translate[d+ii*18+5] = _y;
+
+        x_translate[d+ii*18+6] = 0.0;
+        x_translate[d+ii*18+7] = x;
+        x_translate[d+ii*18+8] = y;
+
+
+        ////////////////////////
+
+        x_translate[d+ii*18+9] = 0.0;
+        x_translate[d+ii*18+10] = x;
+        x_translate[d+ii*18+11] = y;
+
+
+        x_translate[d+ii*18+12] = w_a;
+        x_translate[d+ii*18+13] = x;
+        x_translate[d+ii*18+14] = y;
+
+        x_translate[d+ii*18+15] = w_a;
+        x_translate[d+ii*18+16] = _x;
+        x_translate[d+ii*18+17] = _y;
+
+        _x = x;
+        _y = y;
+    }
+
+    x_translate[d] = 0.0;
+    x_translate[d+1] = _x;
+    x_translate[d+2] = _y;
+
+    x_translate[d+3] = w_a;
+    x_translate[d+4] = _x;
+    x_translate[d+5] = _y;
+
+    x_translate[d+6] = 0.0;
+    x_translate[d+7] = o_x;
+    x_translate[d+8] = o_y;
+
+    /////
+
+    x_translate[d+9] = 0.0;
+    x_translate[d+10] = _x;
+    x_translate[d+11] = _y;
+
+    x_translate[d+12] = w_a;
+    x_translate[d+13] = _x;
+    x_translate[d+14] = _y;
+
+    x_translate[d+15] = 0.0;
+    x_translate[d+16] = o_x;
+    x_translate[d+17] = o_y;
+
+
+
+    ///////////////////////////////////////////////////////////////////////////
+
+
+    _theta = 2.0f * 3.1415926f * float(0) / float(8);//get the current angle
+    _x = r * cos(_theta);//calculate the x component
+    _y = r * sin(_theta);//calculate the y component
+
+    o_x = _x;
+    o_y = _y;
+
+    for (int ii = 1; ii < 8; ii++)   {
+        float theta = 2.0f * 3.1415926f * float(ii) / float(8);//get the current angle
+        x = r * cos(theta);//calculate the x component
+        y = r * sin(theta);//calculate the y component
+
+        y_translate[ii*9]   = _x;
+        y_translate[ii*9+1] = w_a;
+        y_translate[ii*9+2] = _y;
+
+        y_translate[ii*9+3] = 0.0;
+        y_translate[ii*9+4] = w_a+w_c;
+        y_translate[ii*9+5] = 0.0;
+
+        y_translate[ii*9+6] = x;
+        y_translate[ii*9+7] = w_a;
+        y_translate[ii*9+8] = y;
+
+        _x = x;
+        _y = y;
+    }
+
+    y_translate[0] = _x;
+    y_translate[1] = w_a;
+    y_translate[2] = _y;
+
+    y_translate[3] = 0.0;
+    y_translate[4] = w_a+w_c;
+    y_translate[5] = 0.0;
+
+    y_translate[6] = o_x;
+    y_translate[7] = w_a;
+    y_translate[8] = o_y;
+
+    d = 72;
+
+    _theta = 2.0f * 3.1415926f * float(0) / float(8);//get the current angle
+    _x = k * cos(_theta);//calculate the x component
+    _y = k * sin(_theta);//calculate the y component
+
+    o_x = _x;
+    o_y = _y;
+    for (int ii = 1; ii < 8; ii++)   {
+        float theta = 2.0f * 3.1415926f * float(ii) / float(8);//get the current angle
+        x = k * cos(theta);//calculate the x component
+        y = k * sin(theta);//calculate the y component
+
+        y_translate[d+ii*18]   = _x;
+        y_translate[d+ii*18+1] = 0.0;
+        y_translate[d+ii*18+2] = _y;
+
+        y_translate[d+ii*18+3] = _x;
+        y_translate[d+ii*18+4] = w_a;
+        y_translate[d+ii*18+5] = _y;
+
+        y_translate[d+ii*18+6] = x;
+        y_translate[d+ii*18+7] = 0.0;
+        y_translate[d+ii*18+8] = y;
+
+
+        ////////////////////////
+
+        y_translate[d+ii*18+9] = x;
+        y_translate[d+ii*18+10] = 0.0;
+        y_translate[d+ii*18+11] = y;
+
+        y_translate[d+ii*18+12] = x;
+        y_translate[d+ii*18+13] = w_a;
+        y_translate[d+ii*18+14] = y;
+
+        y_translate[d+ii*18+15] = _x;
+        y_translate[d+ii*18+16] = w_a;
+        y_translate[d+ii*18+17] = _y;
+
+        _x = x;
+        _y = y;
+    }
+
+    y_translate[d] = _x;
+    y_translate[d+1] = 0.0;
+    y_translate[d+2] = _y;
+
+    y_translate[d+3] = _x;
+    y_translate[d+4] = w_a;
+    y_translate[d+5] = _y;
+
+    y_translate[d+6] = o_x;
+    y_translate[d+7] = 0.0;
+    y_translate[d+8] = o_y;
+
+    /////
+
+    y_translate[d+9] = _x;
+    y_translate[d+10] = 0.0;
+    y_translate[d+11] = _y;
+
+    y_translate[d+12] = _x;
+    y_translate[d+13] = w_a;
+    y_translate[d+14] = _y;
+
+    y_translate[d+15] = o_x;
+    y_translate[d+16] = 0.0;
+    y_translate[d+17] = o_y;
+
+
+    ///////////////////////////////////////////////////////////////////////////
+
+
+    _theta = 2.0f * 3.1415926f * float(0) / float(8);//get the current angle
+    _x = r * cos(_theta);//calculate the x component
+    _y = r * sin(_theta);//calculate the y component
+
+    o_x = _x;
+    o_y = _y;
+
+    for (int ii = 1; ii < 8; ii++)   {
+
+        float theta = 2.0f * 3.1415926f * float(ii) / float(8);//get the current angle
+        x = r * cos(theta);//calculate the x component
+        y = r * sin(theta);//calculate the y component
+
+        z_translate[ii*9]   = _x;
+        z_translate[ii*9+1] = _y;
+        z_translate[ii*9+2] = w_a;
+
+        z_translate[ii*9+3] = 0.0;
+        z_translate[ii*9+4] = 0.0;
+        z_translate[ii*9+5] = w_a+w_c;
+
+        z_translate[ii*9+6] = x;
+        z_translate[ii*9+7] = y;
+        z_translate[ii*9+8] = w_a;
+
+        _x = x;
+        _y = y;
+    }
+
+    z_translate[0] = _x;
+    z_translate[1] = _y;
+    z_translate[2] = w_a;
+
+    z_translate[3] = 0.0;
+    z_translate[4] = 0.0;
+    z_translate[5] = w_a+w_c;
+
+    z_translate[6] = o_x;
+    z_translate[7] = o_y;
+    z_translate[8] = w_a;
+
+    d = 72;
+    _theta = 2.0f * 3.1415926f * float(0) / float(8);//get the current angle
+    _x = k * cos(_theta);//calculate the x component
+    _y = k * sin(_theta);//calculate the y component
+
+    o_x = _x;
+    o_y = _y;
+    for (int ii = 1; ii < 8; ii++)   {
+        float theta = 2.0f * 3.1415926f * float(ii) / float(8);//get the current angle
+        x = k * cos(theta);//calculate the x component
+        y = k * sin(theta);//calculate the y component
+
+        z_translate[d+ii*18]   = _x;
+        z_translate[d+ii*18+1] = _y;
+        z_translate[d+ii*18+2] = 0.0;
+
+        z_translate[d+ii*18+3] = _x;
+        z_translate[d+ii*18+4] = _y;
+        z_translate[d+ii*18+5] = w_a;
+
+        z_translate[d+ii*18+6] = x;
+        z_translate[d+ii*18+7] = y;
+        z_translate[d+ii*18+8] = 0.0;
+
+
+        ////////////////////////
+
+        z_translate[d+ii*18+9] = x;
+        z_translate[d+ii*18+10] = y;
+        z_translate[d+ii*18+11] = 0.0;
+
+        z_translate[d+ii*18+12] = x;
+        z_translate[d+ii*18+13] = y;
+        z_translate[d+ii*18+14] = w_a;
+
+        z_translate[d+ii*18+15] = _x;
+        z_translate[d+ii*18+16] = _y;
+        z_translate[d+ii*18+17] = w_a;
+
+        _x = x;
+        _y = y;
+    }
+
+    z_translate[d] = _x;
+    z_translate[d+1] = _y;
+    z_translate[d+2] = 0.0;
+
+    z_translate[d+3] = _x;
+    z_translate[d+4] = _y;
+    z_translate[d+5] = w_a;
+
+    z_translate[d+6] = o_x;
+    z_translate[d+7] = o_y;
+    z_translate[d+8] = 0.0;
+
+    /////
+
+    z_translate[d+9] = _x;
+    z_translate[d+10] = _y;
+    z_translate[d+11] = 0.0;
+
+    z_translate[d+12] = _x;
+    z_translate[d+13] = _y;
+    z_translate[d+14] = w_a;
+
+    z_translate[d+15] = o_x;
+    z_translate[d+16] = o_y;
+    z_translate[d+17] = 0.0;
+
+}
+
+void FGETranslationComponent::initShader()
+{
+    initShaderForCircleTranslate();
+    initShaderForAxesTranslate();
+    initShaderForSelection();
+}
+
+void FGETranslationComponent::initShaderForCircleTranslate()
+{
+    int success;
+    char infoLog[512];
+
+    const char *dvsc =
+                "attribute vec3 vertex;"
+                "uniform mat4 model;"
+                //"uniform mat4 view;"
+                "uniform mat4 projection;"
+                "void main()"
+                "{"
+                "    gl_Position = projection * model * vec4(vertex, 1.0);"
+                "}";
+
+    const char *dfsc =
+                "void main()"
+                "{"
+                "   gl_FragColor = vec4(1.0, 1.0, 1.0, 0.7);"
+                "}";
+
+    unsigned int dvs = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(dvs, 1, &dvsc, NULL);
+    glCompileShader(dvs);
+
+        glGetShaderiv(dvs, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            glGetShaderInfoLog(dvs, 512, NULL, infoLog);
+            qDebug() << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog;
+        }
+
+    unsigned int dfs = glCreateShader(GL_FRAGMENT_SHADER); // the first fragment shader that outputs the color orange
+    glShaderSource(dfs, 1, &dfsc, NULL);
+    glCompileShader(dfs);
+
+        glGetShaderiv(dfs, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            glGetShaderInfoLog(dfs, 512, NULL, infoLog);
+            qDebug() << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog;
+        }
+
+    shaderProgram_c_translate = glCreateProgram();
+    glAttachShader(shaderProgram_c_translate, dvs);
+    glAttachShader(shaderProgram_c_translate, dfs);
+
+    glBindAttribLocation(shaderProgram_c_translate, 0, "vertex");
+
+    glLinkProgram(shaderProgram_c_translate);
+
+        glGetProgramiv(shaderProgram_c_translate, GL_LINK_STATUS, &success);
+        if (!success) {
+            glGetProgramInfoLog(shaderProgram_c_translate, 512, NULL, infoLog);
+            qDebug() << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog;
+        }
+
+    glDeleteShader(dvs);
+    glDeleteShader(dfs);
+
+}
+
+void FGETranslationComponent::initShaderForAxesTranslate()
+{
+    int success;
+    char infoLog[512];
+
+    const char *vsst =
+                "attribute vec3 vertex;"
+                "attribute vec3 color;"
+                "varying vec3 _color;"
+                "uniform mat4 model;"
+                "uniform mat4 view;"
+                "uniform mat4 projection;"
+                "void main()"
+                "{"
+                "    gl_Position = projection * model * view * vec4(vertex, 1.0);"
+                "   _color = color;"
+                "}";
+
+    const char *fsst =
+                "varying vec3 _color;"
+                "void main()"
+                "{"
+                "   gl_FragColor = vec4(_color, 1.0);"
+                "}";
+
+    unsigned int vs = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vs, 1, &vsst, NULL);
+    glCompileShader(vs);
+
+        glGetShaderiv(vs, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            glGetShaderInfoLog(vs, 512, NULL, infoLog);
+            qDebug() << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog;
+        }
+
+    unsigned int fs = glCreateShader(GL_FRAGMENT_SHADER); // the first fragment shader that outputs the color orange
+    glShaderSource(fs, 1, &fsst, NULL);
+    glCompileShader(fs);
+
+        glGetShaderiv(fs, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            glGetShaderInfoLog(fs, 512, NULL, infoLog);
+            qDebug() << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog;
+        }
+
+    shaderProgram_xyz_translate = glCreateProgram();
+    glAttachShader(shaderProgram_xyz_translate, vs);
+    glAttachShader(shaderProgram_xyz_translate, fs);
+
+    glBindAttribLocation(shaderProgram_xyz_translate, 0, "vertex");
+    glBindAttribLocation(shaderProgram_xyz_translate, 1, "color");
+
+    glLinkProgram(shaderProgram_xyz_translate);
+
+        glGetProgramiv(shaderProgram_xyz_translate, GL_LINK_STATUS, &success);
+        if (!success) {
+            glGetProgramInfoLog(shaderProgram_xyz_translate, 512, NULL, infoLog);
+            qDebug() << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog;
+        }
+
+    glDeleteShader(vs);
+    glDeleteShader(fs);
+
+}
+
+void FGETranslationComponent::initShaderForSelection()
+{
+    int success;
+    char infoLog[512];
+
+    const char *vsst =
+                "attribute vec3 vertex;"
+                "uniform mat4 model;"
+                "uniform mat4 view;"
+                "uniform mat4 projection;"
+                "void main()"
+                "{"
+                "    gl_Position = projection * view * model * vec4(vertex, 1.0);"
+                "}";
+
+    const char *fsst =
+                "uniform vec3 color;"
+                "void main()"
+                "{"
+                "   gl_FragColor = vec4(color, 1.0);"
+                "}";
+
+    unsigned int vs = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vs, 1, &vsst, NULL);
+    glCompileShader(vs);
+
+        glGetShaderiv(vs, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            glGetShaderInfoLog(vs, 512, NULL, infoLog);
+            qDebug() << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog;
+        }
+
+    unsigned int fs = glCreateShader(GL_FRAGMENT_SHADER); // the first fragment shader that outputs the color orange
+    glShaderSource(fs, 1, &fsst, NULL);
+    glCompileShader(fs);
+
+        glGetShaderiv(fs, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            glGetShaderInfoLog(fs, 512, NULL, infoLog);
+            qDebug() << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog;
+        }
+
+    shaderProgram_selection = glCreateProgram();
+    glAttachShader(shaderProgram_selection, vs);
+    glAttachShader(shaderProgram_selection, fs);
+
+    glBindAttribLocation(shaderProgram_selection, 0, "vertex");
+
+    glLinkProgram(shaderProgram_selection);
+
+        glGetProgramiv(shaderProgram_selection, GL_LINK_STATUS, &success);
+        if (!success) {
+            glGetProgramInfoLog(shaderProgram_selection, 512, NULL, infoLog);
+            qDebug() << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog;
+        }
+
+    glDeleteShader(vs);
+    glDeleteShader(fs);
+
+}
+
+void FGETranslationComponent::normalDraw(glm::mat4 view_t, glm::mat4 view_c, glm::mat4 projection, glm::mat4 model_t, glm::mat4 model_c)
+{
+    ////////////////////////////////////  draw x axe   ////////////////////////////////////
+    //glDepthFunc(GL_ALWAYS);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glLineWidth(2);
+    //glUseProgram(0);
+    // glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z)),  glm::radians((float)angle),  glm::vec3(1.0f, 1.0f, 0.0f))
+    glUseProgram(shaderProgram_xyz_translate);
+    setMat4(shaderProgram_xyz_translate, "projection", projection);
+    //setMat4(shaderProgram_xyz_translate, "view", view_t);
+    setMat4(shaderProgram_xyz_translate, "model", model_t);
+    glBindVertexArray(vao_a);
+    glDrawArrays(GL_TRIANGLES, 0, 72*3);
+
+    //glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z))
+    glDepthFunc(GL_ALWAYS);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glUseProgram(shaderProgram_c_translate);
+    setMat4(shaderProgram_c_translate, "projection", projection);
+    //setMat4(shaderProgram_c_translate, "view", view_c);
+    setMat4(shaderProgram_c_translate, "model", model_c);
+
+    glBindVertexArray(vao_c);
+    glDrawArrays(GL_LINE_LOOP, 0, 36);
+}
+
+
+void FGETranslationComponent::selectionDraw(glm::mat4 view, glm::mat4 projection, glm::mat4 model)
+{
+    ////////////////////////////////////  draw x axe   ////////////////////////////////////
+    glDepthFunc(GL_ALWAYS);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glUseProgram(shaderProgram_selection);
+    setMat4(shaderProgram_selection, "projection", projection);
+    setMat4(shaderProgram_selection, "view", view);
+    setMat4(shaderProgram_selection, "model", model);
+
+    setVec3(shaderProgram_selection, "color", glm::vec3(1.0, 0.0, 0.0));
+    glBindVertexArray(vao_xa);
+    glDrawArrays(GL_TRIANGLES, 0, 72);
+
+    setVec3(shaderProgram_selection, "color", glm::vec3(0.0, 1.0, 0.0));
+    glBindVertexArray(vao_ya);
+    glDrawArrays(GL_TRIANGLES, 0, 72);
+
+    setVec3(shaderProgram_selection, "color", glm::vec3(0.0, 0.0, 1.0));
+    glBindVertexArray(vao_za);
+    glDrawArrays(GL_TRIANGLES, 0, 72);
+
+    setVec3(shaderProgram_selection, "color", glm::vec3(0.5, 0.5, 0.5));
+    glBindVertexArray(vao_c);
+    glDrawArrays(GL_POLYGON, 0, 36);
+}
+
+void FGETranslationComponent::setMat4(unsigned int sh, const std::string& name, const glm::mat4& mat) const
+{
+    glUniformMatrix4fv(glGetUniformLocation(sh, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+}
+void FGETranslationComponent::setVec3(unsigned int sh, const std::string &name, const glm::vec3 &value) const
+{
+    glUniform3fv(glGetUniformLocation(sh, name.c_str()), 1, &value[0]);
+}
+
+glm::vec3 FGETranslationComponent::normal(glm::vec3 n)
+{
+    float v = glm::max(n[0]*n[0], glm::max(n[1]*n[1], n[2]*n[2]));
+    v = sqrt(v)*2;
+    n[0] = n[0]/v;
+    n[1] = n[1]/v;
+    n[2] = n[2]/v;
+    return n;
+}
+
+void FGETranslationComponent::drawGizmosTranslation(FGECamera *camera, FGEStructProject *struct_project, int WIDTH, int HEIGHT)
+{
+    ////////////////////////////////////  center_object  ////////////////////////////////////
+
+    glm::mat4 ortho = glm::ortho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+
+    glm::vec3 pos_s = glm::project(struct_project->node_current->transform.translate,struct_project->scene_current->view.matrix, struct_project->scene_current->projection.matrix, glm::vec4(0.0, 0.0,  WIDTH, HEIGHT));
+    glm::vec3 pos_w = glm::unProject(glm::vec3(pos_s[0], pos_s[1], 0.2), glm::mat4(1.0f), struct_project->scene_current->projection.matrix, glm::vec4(0.0, 0.0,  WIDTH, HEIGHT));
+
+    float d = glm::distance(struct_project->node_current->transform.translate, pos_w);
+    //d = d*d+1;
+    //glm::scale(glm::translate(glm::mat4(1.0f), pos_w), glm::vec3(d, d, d))
+    //qDebug() << "* dist " << d;
+    /*glm::vec3 pos_x = glm::project(glm::vec3(0.1, pos_w[1], pos_w[2]),struct_project->scene_current->view.matrix, struct_project->scene_current->projection.matrix, glm::vec4(0.0, 0.0,  WIDTH, HEIGHT));
+    glm::vec3 pos_y = glm::project(glm::vec3(pos_w[0], 0.1, pos_w[2]),struct_project->scene_current->view.matrix, struct_project->scene_current->projection.matrix, glm::vec4(0.0, 0.0,  WIDTH, HEIGHT));
+    glm::vec3 pos_z = glm::project(glm::vec3(pos_w[0], pos_w[1], 0.1),struct_project->scene_current->view.matrix, struct_project->scene_current->projection.matrix, glm::vec4(0.0, 0.0,  WIDTH, HEIGHT));
+*/
+    //glm::vec3 pos_w = glm::unProject(glm::vec3(pos_s[0], pos_s[1], 0.2), glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)), struct_project->node_current->transform.matrix, glm::vec4(pos_s[0]-100, pos_s[1]-100, 200, 200));
+
+    //glViewport((int)pos_s[0]-100, (int)pos_s[1]-100, 200, 200);
+
+    //glm::vec3 _u = glm::vec3(1.0, 0.0, 0.0);
+    glm::vec3 _u = camera->current_position-camera->current_target;
+    //_u = normal(_u);
+
+    float cos2a = glm::dot(glm::vec3(0.0,1.0,0.0), _u);
+    glm::vec3 f = glm::cross(glm::vec3(0.0,1.0,0.0), _u);
+    glm::mat4 m_ = glm::toMat4(glm::angleAxis( glm::radians(cos2a), f));
+    //glm::quat q(.0, 0.40346, 0.67191, 0.466216);//glm::angleAxis(glm::radians(0.0f), glm::normalize(_u));
+
+qDebug() << "* _u[0] " << _u[0];
+qDebug() << "* _u[1] " << _u[1];
+qDebug() << "* _u[2] " << _u[2];
+qDebug() << "* cos2a " << cos2a;
+
+qDebug() << "* f[0] " << f[0];
+qDebug() << "* f[1] " << f[1];
+qDebug() << "* f[2] " << f[2];
+
+    //glm::mat4 uu = glm::toMat4(glm::angleAxis(glm::radians(45.0f), glm::normalize(_u)));
+    /*glm::quat q = glm::angleAxis(glm::radians(cos2a), f);
+
+
+    glm::vec3 euler = glm::eulerAngles(q);
+
+    glm::mat4 transformX = glm::eulerAngleX(euler[0]);
+    glm::mat4 transformY = glm::eulerAngleY(euler[1]);
+    glm::mat4 transformZ = glm::eulerAngleZ(euler[2]);
+*/
+    m_ = glm::translate(m_, pos_w);
+    ////m_ = transformX * transformY * transformZ*m_; // or some other order
+
+
+
+    /*glm::mat4 m_ = glm::translate(glm::mat4(1.0f), pos_w);
+    m_ = glm::rotate(m_,  euler[0],  glm::vec3(1.0f, 0.0f, 0.0f));
+    m_ = glm::rotate(m_,  euler[1],  glm::vec3(0.0f, 1.0f, 0.0f));
+    m_ = glm::rotate(m_,  euler[2],  glm::vec3(0.0f, 0.0f, 1.0f));
+*/
+
+
+
+    glUseProgram(shaderProgram_xyz_translate);
+    setMat4(shaderProgram_xyz_translate, "view", glm::mat4(1.0f));
+    setMat4(shaderProgram_xyz_translate, "projection", struct_project->scene_current->projection.matrix);
+    setMat4(shaderProgram_xyz_translate, "model", m_);
+    glBindVertexArray(vao_a);
+    glDrawArrays(GL_TRIANGLES, 0, 72*3);
+
+    glDepthFunc(GL_ALWAYS);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+    /*glUseProgram(shaderProgram_c_translate);
+    setMat4(shaderProgram_c_translate, "projection", ortho);
+    //setMat4(shaderProgram_c_translate, "view", view_c);
+    setMat4(shaderProgram_c_translate, "model", glm::translate(glm::mat4(1.0f), pos_w));
+
+    glBindVertexArray(vao_c);
+    glDrawArrays(GL_LINE_LOOP, 0, 36);*/
+
+
+    glViewport(0, 0, WIDTH, HEIGHT);
+
+}

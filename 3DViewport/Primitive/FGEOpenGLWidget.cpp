@@ -197,6 +197,7 @@ void FGEOpenGLWidget::initializeGL()
 
     this->light_tool = new FGELight(this->f);
     this->gizmos = new FGEGizmos(this->f);
+    this->gizmos->setDataCamera(this->current_data_camera);
     this->sculpt = new FGESculptMesh(this->f);
     this->painting_skin_weights = new FGEPaintingSkinWeights(this->f);
 
@@ -453,6 +454,7 @@ void FGEOpenGLWidget::paintGL()
         QPainter painter(this);
 
         this->camera->updateCameraAndView();
+        this->gizmos->setDataCamera(this->current_data_camera);
 
         //this->render_primitive->updateBuffer(this->f);
 

@@ -1,0 +1,1107 @@
+#include "FGEOpenGLWidget.h"
+
+FGEOpenGLWidget::FGEOpenGLWidget(QGLFormat format, FGETriggerFunction *trigger, FGEDataProject *data_project, QString name, void *dock, QWidget *parent) : QOpenGLWidget(parent)
+{
+
+
+    this->dock_parent = dock;
+    this->initialized=0;
+    this->scene = NULL;
+    this->parent = parent;
+    this->name_3dview = name;
+
+    this->trigger = trigger;
+    this->data_project = data_project;
+    this->display_mode = 3;
+    this->edit_mode = 0;
+
+    this->render_primitive = new FGECoreRenderPrimitive();
+
+
+    QOffscreenSurface surf;
+    surf.create();
+
+    QOpenGLContext ctx;
+    ctx.create();
+    ctx.makeCurrent(&surf);
+
+    qDebug () <<"OpenGL version : "<< (const char*)ctx.functions()->glGetString(GL_VERSION);
+
+    QSurfaceFormat fmt;
+    fmt.setSamples(8);
+    setFormat(fmt);
+
+
+
+     FGEDataAnimation * animation = data_project->first_animation;
+     while(animation!=NULL){
+         animation->prepare(0.0416666);
+         animation=animation->next;
+     }
+
+
+    //this->data_project->textur++;
+    //this->struct_project_textur = this->data_project->textur;
+
+}
+
+FGEOpenGLWidget::~FGEOpenGLWidget()
+{
+    //trans_comp->~FGETranslationComponent();
+
+}
+
+void FGEOpenGLWidget::newBufferAdded(){
+    makeCurrent();
+    this->render_primitive->updateBuffer(this->f);
+    update();
+    doneCurrent();
+}
+void FGEOpenGLWidget::slotUpdateGL(){
+    //qDebug() << "uuuuuuuuuuuu  slotUpdateGL";
+    update();
+}
+
+void FGEOpenGLWidget::triggerUpdateGL(){
+
+    //FGESceneOS *cursc = struct_project->scene_current;
+    if(this->projection.is_perspective){
+        //cursc->projection.scaleFactor = 1.0f;
+        //qDebug() << "i" << cursc->projection.perspective.near;
+        this->projection.matrix = glm::perspective(
+                    this->projection.perspective.fovy,
+                    this->projection.perspective.aspect,
+                    this->projection.perspective.near,
+                    this->projection.perspective.far
+        );
+    }else{
+        //qDebug() << "m";
+
+        this->projection.scaleFactor = this->camera->SUPER_VAL_ZOOM/glm::length(this->camera->current_eye);
+
+        this->projection.matrix = glm::ortho(
+                    this->projection.ortho.left,
+                    this->projection.ortho.right,
+                    this->projection.ortho.bottom,
+                    this->projection.ortho.top,
+                    this->projection.ortho.znear,
+                    this->projection.ortho.zfar
+        );
+    }
+
+    //qDebug() << "v";
+    update();
+}
+
+
+void FGEOpenGLWidget::setDisplayMode(int value)
+{
+    this->display_mode = value;
+}
+
+OpenGLFunctions * FGEOpenGLWidget::openGLFunctions() const
+{
+    return context()->versionFunctions<QOpenGLFunctions_3_0>();
+}
+
+void FGEOpenGLWidget::initializeGL()
+{ //qDebug() << "ffff";
+
+    initializeOpenGLFunctions();
+    this->f = openGLFunctions();
+
+    //getMaxSamples();
+
+    this->f->glEnable(GL_MULTISAMPLE);
+
+    this->camera = new FGECamera();
+    this->camera->init(&this->view, &this->projection);
+    this->camera->key_shift = false;
+
+
+    this->shader = new FGEGLSL();
+
+
+    this->render_primitive->setDataProject(this->data_project);
+    this->render_primitive->setShader(this->shader);
+    this->render_primitive->updateBuffer(this->f);
+
+    //qDebug()<< " ////ffffffffff////";
+
+    this->view.matrix = glm::lookAt(this->camera->current_position+this->camera->current_eye, this->camera->current_position+this->camera->current_target, this->camera->current_up);
+
+    this->shader->clearAttribLocation();
+    this->shader->appendAttribLocation(0, "vertex");
+    this->shader_program_selection = shader->initShader(this->f, "/home/corolo/Qt/FireGameEngine22/Shader/Scene/VertexShaderSelection.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Scene/FragmentShaderSelection.frag");
+
+    this->select = new FGESelect();
+    this->select->init(this->f, this->data_project, this->shader);
+    this->select->setRenderDevice(this->render_primitive->render_device);
+
+    this->select_edit_mode = new FGEEditModeSelection();
+    this->select_edit_mode->init(this->f, this->data_project, this->shader);
+    this->select_edit_mode->setRenderDevice(this->render_primitive->render_device);
+
+
+    /*
+    shader->clearAttribLocation();
+    shader->appendAttribLocation(0, "aPos");
+    shader->appendAttribLocation(1, "aTexCoords");
+    GLuint sprt = shader->initShader(f, "/home/corolo/Qt/FireGameEngine/Shader/Screen/VertexShader.vert", "/home/corolo/Qt/FireGameEngine/Shader/Screen/FragmentShader.frag");
+    this->render_tarjet_selection = new FGERenderTarget(f, sprt, 0, 0, 0.0);
+
+    shader->clearAttribLocation();
+    shader->appendAttribLocation(0, "aPos");
+    shader->appendAttribLocation(1, "aTexCoords");
+    GLuint __shader_program = shader->initShader(this->f, "/home/corolo/Qt/FireGameEngine/Shader/Screen/VertexShader.vert", "/home/corolo/Qt/FireGameEngine/Shader/Screen/FragmentShader.frag");
+    ////GLuint __shader_program = shader->initShader("/home/corolo/Qt/FireGameEngine/Shader/Screen/OutlinePostprocessing.vertex", "/home/corolo/Qt/FireGameEngine/Shader/Screen/OutlinePostprocessing.fragment");
+
+    this->render_tarjet = new FGERenderTarget(this->f, __shader_program, 0, 0, 0.0);
+
+    shader->clearAttribLocation();
+    shader->appendAttribLocation(0, "aPos");
+    shader->appendAttribLocation(1, "aTexCoords");
+    __shader_program = shader->initShader(this->f, "/home/corolo/Qt/FireGameEngine/Shader/Screen/OutlinePostprocessing.vert", "/home/corolo/Qt/FireGameEngine/Shader/Screen/OutlinePostprocessing.frag");
+    this->render_tarjet_outline = new FGERenderTarget(this->f, __shader_program, 0, 0, 0.9);
+*/
+
+
+    this->render_tarjet_selection = new FGERenderTarget(this->f, this->shader, 0, 0, 0.0, "/home/corolo/Qt/FireGameEngine22/Shader/Screen/VertexShader.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Screen/FragmentShader.frag");
+    this->render_tarjet = new FGERenderTarget(this->f, this->shader, 0, 0, 0.0, "/home/corolo/Qt/FireGameEngine22/Shader/Screen/VertexShader.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Screen/FragmentShader.frag");
+    this->render_tarjet_outline = new FGERenderTarget(this->f, this->shader, 0, 0, 0.9,  "/home/corolo/Qt/FireGameEngine22/Shader/Screen/OutlinePostprocessing.vert", "/home/corolo/Qt/FireGameEngine22/Shader/Screen/OutlinePostprocessing.frag");
+
+    this->light_tool = new FGELight(this->f);
+    this->gizmos = new FGEGizmos(this->f);
+
+
+    view_opp = new FGEViewOpperation(this->f/*draw_text*/);
+
+    /// INITIALIZE GRID
+    this->grid = new FGEGrid();
+    this->grid->init(f, this->shader);
+
+
+    this->area_menu = new FGEOpenGLWidgetActions(this->data_project, this->trigger, this);
+
+
+    //raw_text = new FGEText(this->f);
+    //draw_text->addText(0, "0", 10.0f, 10.0f, 0.3f, glm::vec3(0.8, 1.0f, 0.4f));
+    //draw_text->addText(1, "0", 60.0f, 10.0f, 0.3f, glm::vec3(0.8, 1.0f, 0.4f));
+
+    //QObject::connect(this->trigger, SIGNAL(__updateBuffer()), this,  SLOT(newBufferAdded());
+    QObject::connect(this->trigger, SIGNAL(__updateScene()), this,  SLOT(slotUpdateGL()));
+    QObject::connect(this->trigger, SIGNAL(__updateAllWIdgetsOpenGl()), this,  SLOT(updateAllWIdgetsOpenGl()));
+    QObject::connect(this->trigger, SIGNAL(__switch3DViewToEditMode(QString, int)), this,  SLOT(switch3DViewToEditMode(QString, int)));
+
+}
+
+void FGEOpenGLWidget::switch3DViewToEditMode(QString name_3dview, int type_mode) {
+
+    qDebug() << "--------switch3DViewToEditMode---------- " <<name_3dview<<" - "<<type_mode;
+    qDebug() << "--------switch3DViewToEditMode----------";
+    if(this->name_3dview==name_3dview){
+        this->edit_mode = type_mode;
+        if(type_mode==1){
+            this->render_primitive->buffer_gl->initSimple(this->f, this->data_project->current_node->simple);
+        }else if(type_mode==3){
+            this->render_primitive->buffer_gl->initFacesForSelection(this->f, this->data_project->current_node->simple);
+        }
+        this->update();
+    }
+}
+
+GLint FGEOpenGLWidget::getMaxSamples() {
+    GLint maxSamples = 0;
+    QOffscreenSurface sfc;
+    sfc.create();
+    QOpenGLContext ctx;
+    if(ctx.create()) {
+        ctx.makeCurrent(&sfc);
+        glGetIntegerv(GL_MAX_SAMPLES, &maxSamples);
+        ctx.doneCurrent();
+    }
+    return maxSamples;
+}
+
+void FGEOpenGLWidget::updateInit(){
+    makeCurrent();
+    this->render_primitive->updateBuffer(this->f);
+    update();
+    doneCurrent();
+}
+void FGEOpenGLWidget::updateAllWIdgetsOpenGl(){
+    update();
+}
+
+void FGEOpenGLWidget::swappeProjection(int mode){
+    //qDebug() << "swappeProjection : "<<mode;
+    if(mode==0){
+        this->projection.is_perspective = true;
+    }else if(mode==1){
+        this->projection.is_perspective = false;
+    }
+
+    if(this->projection.is_perspective) {
+        this->projection.perspective.aspect =  (float)WIDTH / (float)HEIGHT;
+        float fovPerPixel = 0.1 * 3.14159265358979323846 / 180;
+        float fov = (float)HEIGHT * fovPerPixel;
+
+        this->projection.matrix = glm::perspective(
+                    fov,
+                    this->projection.perspective.aspect,
+                    this->projection.perspective.near,
+                    this->projection.perspective.far
+        );
+    }else{
+        if (WIDTH <= HEIGHT){
+            this->projection.ortho.bottom      = -1.0*(GLfloat)HEIGHT / (GLfloat)WIDTH;
+            this->projection.ortho.top         = 1.0*(GLfloat)HEIGHT / (GLfloat)WIDTH;
+            this->projection.ortho.left        = -1.0;
+            this->projection.ortho.right       = 1.0;
+        }else{
+            this->projection.ortho.bottom      = -1.0;
+            this->projection.ortho.top         = 1.0;
+            this->projection.ortho.left        =  -1.0*(GLfloat)WIDTH / (GLfloat)HEIGHT;
+            this->projection.ortho.right       =  1.0*(GLfloat)WIDTH / (GLfloat)HEIGHT;
+        }
+        this->projection.matrix = glm::ortho(
+                    this->projection.ortho.left,
+                    this->projection.ortho.right,
+                    this->projection.ortho.bottom,
+                    this->projection.ortho.top,
+                    this->projection.ortho.znear,
+                    this->projection.ortho.zfar
+        );
+    }
+
+
+    update();
+}
+
+void FGEOpenGLWidget::initProjection()
+{
+    if(!this->projection.is_set){
+        float fovPerPixel = 0.1 * 3.14159265358979323846 / 180;
+        float fovy = (float)HEIGHT * fovPerPixel;
+        this->projection.perspective.fovy = fovy;
+
+        this->projection.scaleFactor = 3.0f;
+        this->projection.is_perspective = true;
+
+        this->projection.perspective.is_set = true;
+        this->projection.perspective.far = 300.0;
+        this->projection.perspective.near = 0.01;
+        this->projection.perspective.radians = 45.0;
+        this->projection.perspective.aspect =  (float)WIDTH / (float)HEIGHT;
+        this->projection.perspective.matrix = glm::perspective(
+                    this->projection.perspective.fovy,
+                    this->projection.perspective.aspect,
+                    this->projection.perspective.near,
+                    this->projection.perspective.far
+        );
+        this->projection.matrix = this->projection.perspective.matrix;
+
+        this->projection.ortho.is_set = true;
+        this->projection.ortho.znear = -1.0;
+        this->projection.ortho.zfar = 300.0;
+        if (WIDTH <= HEIGHT){
+            this->projection.ortho.bottom      = -1.0*(GLfloat)HEIGHT / (GLfloat)WIDTH;
+            this->projection.ortho.top         = 1.0*(GLfloat)HEIGHT / (GLfloat)WIDTH;
+            this->projection.ortho.left        = -1.0;
+            this->projection.ortho.right       = 1.0;
+        }else{
+            this->projection.ortho.bottom      = -1.0;
+            this->projection.ortho.top         = 1.0;
+            this->projection.ortho.left        =  -1.0*(GLfloat)WIDTH / (GLfloat)HEIGHT;
+            this->projection.ortho.right       =  1.0*(GLfloat)WIDTH / (GLfloat)HEIGHT;
+        }
+
+        this->projection.ortho.matrix = glm::ortho(
+                    this->projection.ortho.left,
+                    this->projection.ortho.right,
+                    this->projection.ortho.bottom,
+                    this->projection.ortho.top,
+                    this->projection.ortho.znear,
+                    this->projection.ortho.zfar
+        );
+        this->projection.is_set = true;
+    }
+}
+
+void FGEOpenGLWidget::paintGL()
+{
+
+        makeCurrent();
+        this->f = openGLFunctions();
+        QPainter painter(this);
+
+        painter.beginNativePainting();
+        //painter.setRenderHint(QPainter::Antialiasing);
+
+        initProjection();
+
+        FGEDataScene *current_scene = data_project->current_scene;
+
+        //FGEDataNode *etn = cursc->node;
+
+
+
+
+        {
+            //////////////////////////////////////////
+            //// SIMPLE RENDER TARGET ////////////////
+            ///
+            this->render_tarjet->bind(this->f);
+            this->f->glEnable(GL_DEPTH_TEST);
+            this->f->glDepthFunc(GL_LESS);
+            this->f->glEnable(GL_BLEND);
+            this->f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            this->f->glClearColor(current_scene->color[0], current_scene->color[1], current_scene->color[2], current_scene->color[3]);
+            this->f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            this->f->glDepthRange(0.01, 100.0);
+            this->grid->draw(f, this->shader, this->view, this->projection, glm::vec3(0.6, 0.6, 0.6), glm::vec2(WIDTH, HEIGHT), 1, 2, 0.0, 1000.0);
+            //this->f->glDepthRange(1.0, 0.0);
+
+            /*this->f->glEnable(GL_DEPTH_TEST);
+            this->f->glDepthFunc(GL_LESS);
+            this->f->glEnable(GL_BLEND);
+            this->f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            //this->f->glClearColor(cursc->color[0], cursc->color[1], cursc->color[2], cursc->color[3]);
+
+            this->f->glClearColor(0.443, 0.443, 0.443, 1.0);
+            this->f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
+            //this->grid->draw(f, this->shader, this->view, this->projection, glm::vec3(0.4, 0.4, 0.4), glm::vec2(WIDTH, HEIGHT), 0.1, 1);
+
+            //this->grid->draw(f, this->shader, this->view, this->projection, glm::vec3(0.6, 0.6, 0.6), glm::vec2(WIDTH, HEIGHT), 0.1, 2, 0.0, 15.0);
+            //this->grid->draw(f, this->shader, this->view, this->projection, glm::vec3(0.6, 0.6, 0.6), glm::vec2(WIDTH, HEIGHT), 10, 2, 50.0, 1000.0);
+
+            this->render_primitive->render(
+                        this->f,
+                        (void*)this,
+                        true,
+                        camera->current_eye,
+                        this->WIDTH,
+                        this->HEIGHT,
+                        this->view,
+                        this->projection,
+                        2,
+                        0,
+                        this->display_mode,
+                        this->edit_mode
+                        );
+
+
+
+
+
+            this->render_tarjet->release(this->f, context());
+
+
+        }
+        this->f->glEnable(GL_DEPTH_TEST);
+        this->f->glDepthFunc(GL_ALWAYS);
+        this->f->glEnable(GL_BLEND);
+        this->f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+        if(this->edit_mode==0){
+            //////////////////////////////////////////
+            //// OUTLINE RENDER TARGET ////////////////
+            ///
+            this->render_tarjet_outline->bind(this->f);
+            this->f->glEnable(GL_DEPTH_TEST);
+            this->f->glDepthFunc(GL_ALWAYS);
+            this->f->glEnable(GL_BLEND);
+            this->f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            this->f->glClearColor(0.0, 0.0, 0.0, 1.0);
+            this->f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            this->render_primitive->renderSelectedObjects(
+                        this->f,
+                        this->data_project->selected_nodes,
+                        (void*)this,
+                        camera->current_eye,
+                        this->WIDTH,
+                        this->HEIGHT,
+                        this->view,
+                        this->projection,
+                        0,
+                        5);
+
+
+            this->render_tarjet_outline->release(this->f, context());
+
+        }
+
+
+        this->render_tarjet->render(this->f, this->shader);
+        if(this->edit_mode==0){
+            this->render_tarjet_outline->renderSelected(this->f, this->shader, this->WIDTH, this->HEIGHT);
+        }
+
+
+
+        view_opp->drawAxes(this->f, this->view.matrix, this->projection.matrix, this->data_project, WIDTH, HEIGHT);
+
+
+        if(this->select->isDrug()){
+
+            this->select->drawArea(this->f);
+
+        }else{
+            if(this->edit_mode==0){
+                if(!this->data_project->selected_nodes->isEmpty()){
+                    gizmos->setProjection(this->projection.matrix);
+                    gizmos->setView(this->view.matrix);
+                    gizmos->setScaleFactor(this->projection.scaleFactor);
+                    gizmos->perspectiveIs(this->projection.is_perspective);
+
+                    painter.endNativePainting();
+
+                    FGETransformation *transformation;
+                    if(this->data_project->selected_nodes->getSize()==1){
+                        transformation = this->data_project->selected_nodes->first_selected_item->item->transform;
+                    }else{
+                        transformation = this->data_project->selected_nodes->transformation;
+                    }
+
+                    gizmos->drawGizmo(this->f, transformation, painter);
+                    painter.beginNativePainting();
+                }
+            }else if(this->edit_mode==1){
+                if(!this->data_project->selected_edit_mode.isEmpty()){
+                    gizmos->setProjection(this->projection.matrix);
+                    gizmos->setView(this->view.matrix);
+                    gizmos->setScaleFactor(this->projection.scaleFactor);
+                    gizmos->perspectiveIs(this->projection.is_perspective);
+
+                    uint index = this->data_project->selected_edit_mode.at(0);
+                    glm::vec3 pos = this->data_project->current_node->getPosIfIndexVertex(index);
+                    FGETransformation *transformation = new FGETransformation(NULL, NULL);
+                    transformation->setParent(this->data_project->current_node->transform);
+                    transformation->setLocalVectorTranslation(pos[0], pos[1], pos[2]);
+                    
+                    painter.endNativePainting();
+                    gizmos->drawGizmo(this->f, transformation, painter);
+                    delete transformation;
+                    painter.beginNativePainting();
+                }
+
+            }else if(this->edit_mode==3){
+                if(!this->data_project->selected_edit_mode.isEmpty()){
+                    gizmos->setProjection(this->projection.matrix);
+                    gizmos->setView(this->view.matrix);
+                    gizmos->setScaleFactor(this->projection.scaleFactor);
+                    gizmos->perspectiveIs(this->projection.is_perspective);
+
+                    uint index = this->data_project->selected_edit_mode.at(0);
+                    glm::vec3 pos = this->data_project->current_node->getPosIfIndexFace(index);
+                    FGETransformation *transformation = new FGETransformation(NULL, NULL);
+                    transformation->setParent(this->data_project->current_node->transform);
+                    transformation->setLocalVectorTranslation(pos[0], pos[1], pos[2]);
+
+                    painter.endNativePainting();
+                    gizmos->drawGizmo(this->f, transformation, painter);
+                    delete transformation;
+                    painter.beginNativePainting();
+                }
+
+            }
+
+        }
+
+
+drawLegend(QPoint(WIDTH/2-50,HEIGHT/2-30), &painter);
+        //QPainter painter(this);
+
+painter.endNativePainting();
+
+        f->glDepthFunc(GL_ALWAYS);
+
+        painter.end();
+        f->glDepthFunc(GL_LESS);
+
+        doneCurrent();
+}
+
+void FGEOpenGLWidget::drawLegend(QPoint p, QPainter *painter)
+{
+    const int Margin = 11;
+    const int Padding = 6;
+
+    QTextDocument textDocument;
+    textDocument.setDefaultStyleSheet("* { color: #FFEFEF }");
+    textDocument.setHtml("<h4 align=\"center\">Vowel Categories</h4>"
+                         "<p align=\"center\"><table width=\"100%\">"
+                         "<tr><td>Open:<td>a<td>e<td>o<td>&ouml"
+                         "</table>");
+    textDocument.setTextWidth(textDocument.size().width());
+
+    QRect rect(QPoint(0, 0), textDocument.size().toSize()
+                             + QSize(2 * Padding, 2 * Padding));
+    //painter->translate(width() - rect.width() - Margin,
+    //                   height() - rect.height() - Margin);
+    painter->translate(p);
+    painter->setPen(QColor(255, 239, 255));
+    painter->setBrush(QColor(255, 0, 0, 255));
+    painter->drawRect(rect);
+
+    painter->translate(Padding, Padding);
+    textDocument.drawContents(painter);
+}
+
+void FGEOpenGLWidget::resizeGL(int w, int h)
+{
+    this->f = openGLFunctions();
+    this->f->glViewport(0, 0, w, h);
+
+    WIDTH = w;
+    HEIGHT = h;
+
+    gizmos->gizmos_rotation->init(w, h);
+    gizmos->setViewportWH(w, h);
+
+    data_project->view_port_width = w;
+    data_project->view_port_height = h;
+
+    view_opp->initSizeScreen(WIDTH, HEIGHT);
+    //draw_text->init(WIDTH, HEIGHT);
+
+    this->render_tarjet->update(this->f, WIDTH, HEIGHT);
+    this->render_tarjet_selection->update(this->f, WIDTH, HEIGHT);
+    this->render_tarjet_outline->update(this->f, WIDTH, HEIGHT);
+
+
+
+    if(this->projection.is_perspective) {
+        this->projection.perspective.aspect =  (float)WIDTH / (float)HEIGHT;
+        float fovPerPixel = 0.1 * 3.14159265358979323846 / 180;
+        float fov = (float)HEIGHT * fovPerPixel;
+
+        this->projection.matrix = glm::perspective(
+                    fov,
+                    this->projection.perspective.aspect,
+                    this->projection.perspective.near,
+                    this->projection.perspective.far
+        );
+    }else{
+        if (WIDTH <= HEIGHT){
+            this->projection.ortho.bottom      = -1.0*(GLfloat)HEIGHT / (GLfloat)WIDTH;
+            this->projection.ortho.top         = 1.0*(GLfloat)HEIGHT / (GLfloat)WIDTH;
+            this->projection.ortho.left        = -1.0;
+            this->projection.ortho.right       = 1.0;
+        }else{
+            this->projection.ortho.bottom      = -1.0;
+            this->projection.ortho.top         = 1.0;
+            this->projection.ortho.left        =  -1.0*(GLfloat)WIDTH / (GLfloat)HEIGHT;
+            this->projection.ortho.right       =  1.0*(GLfloat)WIDTH / (GLfloat)HEIGHT;
+        }
+        this->projection.matrix = glm::ortho(
+                    this->projection.ortho.left,
+                    this->projection.ortho.right,
+                    this->projection.ortho.bottom,
+                    this->projection.ortho.top,
+                    this->projection.ortho.znear,
+                    this->projection.ortho.zfar
+        );
+    }
+
+
+}
+
+void FGEOpenGLWidget::addNewCube()
+{
+    //FGECreateCubeModel newCube(this->data_project, -3.0, );
+    //this->render_primitive->reInit(this->f, this->shader, this->data_project);
+    update();
+
+}
+void FGEOpenGLWidget::initializeScene(FGEDataProject *data_project)
+{
+    this->data_project = data_project;
+    initialized=1;
+    update();
+}
+
+
+/////////////////////////////////////////////////////////////////////////
+void FGEOpenGLWidget::view_oppUpdateCameraToSelectedAxe()
+{
+    //qDebug() << "@@@ up caremra : " << view_opp->hover_axe;
+
+    view_opp->updateCameraToSelectedAxe(camera, this->data_project, this->view.matrix);
+    update();
+    if(view_opp->key_camera>=10) {
+        //qDebug() << "@@@ clode up caremra";
+        view_opp->key_camera = 0;
+        //view_opp->animation_camera = false;
+        //view_opp->timer->stop();
+    }else{
+        //qDebug() << "@@@ ttttttt";
+        QTimer::singleShot(30, this, SLOT(view_oppUpdateCameraToSelectedAxe()));
+    }
+}
+
+void FGEOpenGLWidget::mousePressEvent(QMouseEvent *event)
+{
+    makeCurrent();
+    this->f = openGLFunctions();
+
+
+    //this->setFocus();
+    if (event->button() == Qt::MiddleButton)
+    {
+        camera->dragMousePress(event, WIDTH, HEIGHT, this->view.matrix, this->projection.matrix);
+        update();
+    }else if (event->button() == Qt::RightButton){
+
+        area_menu->show(mapToGlobal(event->pos()));
+
+    }else{
+
+        glm::vec2 curs_pos = glm::vec2(event->x(), HEIGHT - event->y());
+
+        /*if(create_new_object->isCreation()){
+            create_new_object->setProjectionMatrix(this->projection.matrix);
+            //create_new_object->setView(struct_project->scene_current->view.matrix);
+            create_new_object->setViewMatrix(this->view.matrix);
+            create_new_object->setScaleFactor(this->projection.scaleFactor);
+            create_new_object->setIsPerspective(this->projection.is_perspective);
+
+            create_new_object->pressSelect(curs_pos);
+            this->edw_parent->triger((void *)this);
+            return;
+
+        }else{*/
+            if(view_opp->hover_axe!=0){
+                view_opp->animation_camera = false;
+                view_opp->key_camera = 0;
+                QTimer::singleShot(30, this, SLOT(view_oppUpdateCameraToSelectedAxe()));
+                doneCurrent();
+                return;
+            }
+
+
+
+            if(this->edit_mode==0){
+                if(!data_project->selected_nodes->isEmpty()){
+                    gizmos->setProjection(this->projection.matrix);
+                    gizmos->setView(this->view.matrix);
+                    gizmos->setScaleFactor(this->projection.scaleFactor);
+                    gizmos->perspectiveIs(this->projection.is_perspective);
+                    FGETransformation *transformation;
+                    if(data_project->selected_nodes->getSize()==1){
+                        transformation = data_project->selected_nodes->first_selected_item->item->transform;
+                    }else{
+                        transformation = data_project->selected_nodes->transformation;
+                    }
+                    if(gizmos->pressMouse(this->f, curs_pos, transformation, context(), this->render_tarjet_selection)){
+
+                        doneCurrent();
+                        this->trigger->updateDock(dock_parent);
+                        return;
+                    }
+                }
+            }else if(this->edit_mode==1){
+                if(!data_project->selected_edit_mode.isEmpty()){
+                    gizmos->setProjection(this->projection.matrix);
+                    gizmos->setView(this->view.matrix);
+                    gizmos->setScaleFactor(this->projection.scaleFactor);
+                    gizmos->perspectiveIs(this->projection.is_perspective);
+
+                    uint index = this->data_project->selected_edit_mode.at(0);
+                    glm::vec3 pos = this->data_project->current_node->getPosIfIndexVertex(index);
+                    FGETransformation *transformation = new FGETransformation(NULL, NULL);
+                    transformation->setParent(this->data_project->current_node->transform);
+                    transformation->setLocalVectorTranslation(pos[0], pos[1], pos[2]);
+
+                    if(gizmos->pressMouse(this->f, curs_pos, transformation, context(), this->render_tarjet_selection)){
+
+                        delete transformation;
+                        doneCurrent();
+                        this->trigger->updateDock(dock_parent);
+                        return;
+                    }
+                    delete transformation;
+                }
+            }else if(this->edit_mode==3){
+                if(!data_project->selected_edit_mode.isEmpty()){
+                    gizmos->setProjection(this->projection.matrix);
+                    gizmos->setView(this->view.matrix);
+                    gizmos->setScaleFactor(this->projection.scaleFactor);
+                    gizmos->perspectiveIs(this->projection.is_perspective);
+
+                    uint index = this->data_project->selected_edit_mode.at(0);
+                    glm::vec3 pos = this->data_project->current_node->getPosIfIndexFace(index);
+                    FGETransformation *transformation = new FGETransformation(NULL, NULL);
+                    transformation->setParent(this->data_project->current_node->transform);
+                    transformation->setLocalVectorTranslation(pos[0], pos[1], pos[2]);
+
+                    if(gizmos->pressMouse(this->f, curs_pos, transformation, context(), this->render_tarjet_selection)){
+
+                        delete transformation;
+                        doneCurrent();
+                        this->trigger->updateDock(dock_parent);
+                        return;
+                    }
+                    delete transformation;
+                }
+            }
+
+
+            {
+                /*FGESceneOS *cursc = struct_project->scene_current;
+                ////qDebug() << "t1";
+                initObjects(cursc->node);
+                ////
+
+                initProjection(cursc);*/
+
+                //this->f->glBindFramebuffer(GL_FRAMEBUFFER, addFBO(FBOIndex::TEST));
+                if(this->edit_mode==0){
+                    if(this->select->pressSelect((void*)this, this->f, this->camera->current_eye, this->light_tool, curs_pos, this->view, this->projection, this->shader_program_selection, context(), this->render_tarjet_selection, this->WIDTH, this->HEIGHT)){
+                        this->trigger->updateDock(dock_parent);//trigger((void *)this);
+                        this->trigger->selectionCurrentObject((void*)this->data_project->current_node);
+                        this->trigger->updatePropertiesObject(1);
+                        //doneCurrent();
+                        return;
+                    }else{
+                        update();
+                    }
+                }else if(this->edit_mode==1){
+                    if(this->select_edit_mode->pressSelect((void*)this, this->f, this->edit_mode, this->camera->current_eye, this->light_tool, curs_pos, this->view, this->projection, this->shader_program_selection, context(), this->render_tarjet_selection, this->WIDTH, this->HEIGHT)){
+                        /*this->trigger->updateDock(dock_parent);//trigger((void *)this);
+                        emit this->trigger->updatePropertiesObject(1);*/
+                        //doneCurrent();
+                        return;
+                    }else{
+                        update();
+                    }
+
+                }else if(this->edit_mode==3){
+                    if(this->select_edit_mode->pressSelect((void*)this, this->f, this->edit_mode, this->camera->current_eye, this->light_tool, curs_pos, this->view, this->projection, this->shader_program_selection, context(), this->render_tarjet_selection, this->WIDTH, this->HEIGHT)){
+                        /*this->trigger->updateDock(dock_parent);//trigger((void *)this);
+                        emit this->trigger->updatePropertiesObject(1);*/
+                        //doneCurrent();
+                        doneCurrent();
+                        this->trigger->updateDock(dock_parent);
+                        return;
+                    }else{
+                        update();
+                    }
+
+                }
+
+            }
+
+        //}
+
+    }
+    doneCurrent();
+}
+
+/*glm::mat4 FGEGLWidgetWorld::getRotationToParents(FGENodeOS *node){
+    if(node!=NULL){
+        return getRotationToParents(node->parent)*node->transform.matrix_r;
+    }else{
+        return glm::mat4(1.0);
+    }
+}
+*/
+
+void FGEOpenGLWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    makeCurrent();
+    this->f = openGLFunctions();
+    //this->setFocus();
+    glm::vec2 curs_pos = glm::vec2(event->x(), HEIGHT - event->y());
+
+    //this->setFocus();
+
+    //cursor_x_t->text = QString::number(event->x()).toStdString();
+    //cursor_y_t->text = QString::number(event->y()).toStdString();
+
+    view_opp->hover_axe = 0;
+    if (event->buttons() == Qt::MiddleButton) {
+        camera->dragMouseMove(event, WIDTH, HEIGHT, this->view.matrix, this->projection.matrix);
+        update();
+    }else{
+
+        /*if(create_new_object->isCreation()){
+            create_new_object->setProjectionMatrix(this->projection.matrix);
+            create_new_object->setViewMatrix(this->view.matrix);
+            create_new_object->setScaleFactor(this->projection.scaleFactor);
+            create_new_object->setIsPerspective(this->projection.is_perspective);
+            create_new_object->moveSelect(this->f, curs_pos, WIDTH, HEIGHT);
+            this->edw_parent->triger((void *)this);
+            return;
+        }else{*/
+            if(view_opp->mouseHover(this->f, context(), this->render_tarjet_selection, event->x(), event->y(), this->view.matrix, this->projection.matrix, this->data_project, this->WIDTH, this->HEIGHT)){
+                update();
+            }
+
+            if(this->edit_mode==0){
+                if(!data_project->selected_nodes->isEmpty()){
+                    gizmos->setProjection(this->projection.matrix);
+                    gizmos->setView(this->view.matrix);
+                    gizmos->setScaleFactor(this->projection.scaleFactor);
+                    gizmos->perspectiveIs(this->projection.is_perspective);
+
+                    //FGESelectedNodesItem *sni = struct_project->selected_nodes->getItems();
+                    glm::mat4 old_trans = data_project->selected_nodes->transformation->getLocalTransformation();
+                    FGETransformation *transformation;
+                    if(data_project->selected_nodes->getSize()==1){
+                        transformation = data_project->selected_nodes->first_selected_item->item->transform;
+                    }else{
+                        transformation = data_project->selected_nodes->transformation;
+                    }
+                    if(gizmos->moveMouse(this->f, curs_pos, transformation)){
+
+                        /*if(data_project->current_node!=NULL){
+                            //glm::mat4 _trans = transformation->getLocalTransformation();
+                            /*_trans = _trans/old_trans;
+                            glm::mat4 __mt = transformation->getLocalTransformation();
+                            __mt = _trans*__mt;*/
+                            //data_project->current_node->transform->setLocalTransformation(_trans);*/
+                        if(data_project->selected_nodes->size>1){
+                            glm::mat4 _trans = data_project->selected_nodes->transformation->getLocalTransformation();
+                            _trans = _trans/old_trans;
+                            data_project->selected_nodes->applyTransformation(_trans);
+                        }
+
+
+                        /*glm::vec4 __t = glm::vec4(0.0, 0.0, 0.0, 1.0);
+                        __t = __t*calc_trans;
+
+                        __t*/
+                        emit this->trigger->updatePropertiesObject(0);
+                        emit this->trigger->updateAllWIdgetsOpenGl();
+                        doneCurrent();
+                        //
+                        return;
+                    }
+                }
+            }else if(this->edit_mode==1){
+                if(!data_project->selected_edit_mode.isEmpty()){
+                    gizmos->setProjection(this->projection.matrix);
+                    gizmos->setView(this->view.matrix);
+                    gizmos->setScaleFactor(this->projection.scaleFactor);
+                    gizmos->perspectiveIs(this->projection.is_perspective);
+
+                    //FGESelectedNodesItem *sni = struct_project->selected_nodes->getItems();
+                    uint index = this->data_project->selected_edit_mode.at(0);
+                    glm::vec3 pos = this->data_project->current_node->getPosIfIndexVertex(index);
+                    FGETransformation *transformation = new FGETransformation(NULL, NULL);
+                    transformation->setParent(this->data_project->current_node->transform);
+                    transformation->setLocalVectorTranslation(pos[0], pos[1], pos[2]);
+
+                    //glm::mat4 old_trans = data_project->selected_nodes->transformation->getLocalTransformation();
+
+
+                    if(gizmos->moveMouse(this->f, curs_pos, transformation)){
+
+                        /*if(data_project->current_node!=NULL){
+                            //glm::mat4 _trans = transformation->getLocalTransformation();
+                            /*_trans = _trans/old_trans;
+                            glm::mat4 __mt = transformation->getLocalTransformation();
+                            __mt = _trans*__mt;*/
+                            //data_project->current_node->transform->setLocalTransformation(_trans);*/
+                        /*if(data_project->selected_nodes->size>1){
+                            glm::mat4 _trans = data_project->selected_nodes->transformation->getLocalTransformation();
+                            _trans = _trans/old_trans;
+                            data_project->selected_nodes->applyTransformation(_trans);
+                        }*/
+                        this->data_project->current_node->updateVertexPosition(this->f, index, transformation->getLocalVectorTranslation());
+
+
+                        /*glm::vec4 __t = glm::vec4(0.0, 0.0, 0.0, 1.0);
+                        __t = __t*calc_trans;
+
+                        __t*/
+                        delete transformation;
+                        emit this->trigger->updatePropertiesObject(0);
+                        emit this->trigger->updateAllWIdgetsOpenGl();
+                        doneCurrent();
+                        //
+                        return;
+                    }
+                    delete transformation;
+                }
+            }else if(this->edit_mode==3){
+                if(!data_project->selected_edit_mode.isEmpty()){
+                    gizmos->setProjection(this->projection.matrix);
+                    gizmos->setView(this->view.matrix);
+                    gizmos->setScaleFactor(this->projection.scaleFactor);
+                    gizmos->perspectiveIs(this->projection.is_perspective);
+
+                    //FGESelectedNodesItem *sni = struct_project->selected_nodes->getItems();
+                    uint index = this->data_project->selected_edit_mode.at(0);
+                    glm::vec3 pos = this->data_project->current_node->getPosIfIndexFace(index);
+                    FGETransformation *transformation = new FGETransformation(NULL, NULL);
+                    transformation->setParent(this->data_project->current_node->transform);
+                    transformation->setLocalVectorTranslation(pos[0], pos[1], pos[2]);
+
+                    glm::mat4 old_trans = transformation->getLocalTransformation();
+
+
+                    if(gizmos->moveMouse(this->f, curs_pos, transformation)){
+
+                        /*if(data_project->current_node!=NULL){
+                            //glm::mat4 _trans = transformation->getLocalTransformation();
+                            /*_trans = _trans/old_trans;
+                            glm::mat4 __mt = transformation->getLocalTransformation();
+                            __mt = _trans*__mt;*/
+                            //data_project->current_node->transform->setLocalTransformation(_trans);*/
+                        /*if(data_project->selected_nodes->size>1){
+                            glm::mat4 _trans = data_project->selected_nodes->transformation->getLocalTransformation();
+                            _trans = _trans/old_trans;
+                            data_project->selected_nodes->applyTransformation(_trans);
+                        }*/
+
+                        glm::mat4 _trans = transformation->getLocalTransformation()/old_trans;
+
+                        this->data_project->current_node->updateVerticesFacePosition(this->f, index, _trans);
+
+
+                        /*glm::vec4 __t = glm::vec4(0.0, 0.0, 0.0, 1.0);
+                        __t = __t*calc_trans;
+
+                        __t*/
+                        delete transformation;
+                        emit this->trigger->updatePropertiesObject(0);
+                        emit this->trigger->updateAllWIdgetsOpenGl();
+                        doneCurrent();
+                        //
+                        return;
+                    }
+                    delete transformation;
+                }
+            }
+
+
+            if(this->edit_mode==0){
+                this->select->moveSelect(this->f, curs_pos, WIDTH, HEIGHT);
+                update();
+
+            }else if(this->edit_mode==1){
+                this->select_edit_mode->moveSelect(this->f, curs_pos, WIDTH, HEIGHT);
+                update();
+            }
+        //}
+
+    }
+
+
+    doneCurrent();
+}
+
+void FGEOpenGLWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    makeCurrent();
+    this->f = openGLFunctions();
+
+    this->setFocus();
+
+    glm::vec2 curs_pos = glm::vec2(event->x(), HEIGHT - event->y());
+
+    /*if(create_new_object->isCreation()){
+        create_new_object->releaseSelect(curs_pos, WIDTH, HEIGHT);
+        this->edw_parent->triger((void *)this);
+        return;
+    }else{*/
+
+    if(this->edit_mode==0){
+        if(this->select->releazeSelect((void*)this, this->f, curs_pos, light_tool, this->view, this->projection, this->shader_program_selection, context(), this->render_tarjet_selection, this->WIDTH, this->HEIGHT)){
+            this->trigger->trigger((void *)this);
+            update();
+        }else if(this->edit_mode==1){
+            if(gizmos->releazeMouse()){
+                if(!data_project->selected_nodes->isEmpty()){
+                    this->trigger->updateDock(dock_parent);
+                    update();
+                    doneCurrent();
+                    return;
+                }
+            }
+        }
+
+    }else if(this->edit_mode==1){
+        if(this->select_edit_mode->releazeSelect((void*)this, this->f, this->edit_mode, curs_pos, light_tool, this->view, this->projection, this->shader_program_selection, context(), this->render_tarjet_selection, this->WIDTH, this->HEIGHT)){
+            this->trigger->trigger((void *)this);
+            update();
+        }else{
+            if(gizmos->releazeMouse()){
+                if(!data_project->selected_nodes->isEmpty()){
+                    this->trigger->updateDock(dock_parent);
+                    update();
+                    doneCurrent();
+                    return;
+                }
+            }
+        }
+    }else if(this->edit_mode==3){
+        if(this->select_edit_mode->releazeSelect((void*)this, this->f, this->edit_mode, curs_pos, light_tool, this->view, this->projection, this->shader_program_selection, context(), this->render_tarjet_selection, this->WIDTH, this->HEIGHT)){
+            this->trigger->trigger((void *)this);
+            update();
+        }else{
+            if(gizmos->releazeMouse()){
+                if(!data_project->selected_nodes->isEmpty()){
+                    this->trigger->updateDock(dock_parent);
+                    update();
+                    doneCurrent();
+                    return;
+                }
+            }
+        }
+    }
+
+    //}
+    doneCurrent();
+
+}
+
+void FGEOpenGLWidget::keyPressEvent(QKeyEvent *event)
+{
+    //qDebug() << "event->key() " << event->key();
+    if(event->key() == Qt::Key_Shift)
+    {
+        camera->setKeyShift(true);
+        update();
+    }/**else if(event->key() == Qt::Key_Up){
+        //qDebug() << "--Key_Up";
+        ___lightPos[2] -= 0.5;
+        update();
+    }else if(event->key() == Qt::Key_Down){
+        ___lightPos[2] += 0.5;
+        update();
+    }else if(event->key() == Qt::Key_Left){
+        ___lightPos[0] -= 0.5;
+        update();
+    }else if(event->key() == Qt::Key_Right){
+        ___lightPos[0] += 0.5;
+        update();
+    }else if(event->key() == Qt::Key_X){
+        ___lightPos[1] += 0.5;
+        update();
+    }else if(event->key() == Qt::Key_C){
+        ___lightPos[1] -= 0.5;
+        update();
+    }*/
+
+}
+
+void FGEOpenGLWidget::keyReleaseEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_Shift)
+    {
+        camera->setKeyShift(false);
+    }
+}
+
+
+void FGEOpenGLWidget::wheelEvent(QWheelEvent *event)
+{
+    camera->zoom(event);
+    update();
+    event->accept();
+}

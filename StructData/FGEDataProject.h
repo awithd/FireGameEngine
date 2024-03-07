@@ -169,8 +169,8 @@ public:
         FGEDataCamera *sfv = new FGEDataCamera;
         sfv->next = NULL;
         sfv->prev = NULL;
-        sfv->width = 0;
-        sfv->height = 0;
+        sfv->screenWidth = 0;
+        sfv->screenHeight = 0;
         /*sfv->view = c_p;
         sfv->projection = c_v;*/
 
