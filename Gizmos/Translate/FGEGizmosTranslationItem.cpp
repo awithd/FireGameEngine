@@ -11,10 +11,10 @@ FGEGizmosTranslationItem::FGEGizmosTranslationItem(OpenGLFunctions *f)
     rym = glm::mat4(1.0f);
     rzm = glm::rotate(glm::mat4(1.0f),  glm::radians(90.0f),  glm::vec3(1.0f, 0.0f, 0.0f));
 
-    glm::mat4 m = glm::translate(glm::mat4(1.0f), glm::vec3(0.0008, 0.0008, 0.0));
+    glm::mat4 m = glm::translate(glm::mat4(1.0f), glm::vec3(0.008, 0.008, 0.0));
     this->txymp = glm::rotate(m, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    this->tzxmp = glm::translate(glm::mat4(1.0f), glm::vec3(0.0008, 0.0, 0.0008));
-    m = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0008, 0.0008));
+    this->tzxmp = glm::translate(glm::mat4(1.0f), glm::vec3(0.008, 0.0, 0.008));
+    m = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.008, 0.008));
     this->tyzmp = glm::rotate(m, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
 
@@ -76,7 +76,7 @@ FGEGizmosTranslationItem::FGEGizmosTranslationItem(OpenGLFunctions *f)
 
 
     plane.getBuffer(mesh_plane, 0.005, 1, 0.005, 1, mpcv, 1);
-    transformation.translate3D(mesh_plane, 0, 3, 0.0050, 0.0000, -0.0050);
+    //transformation.translate3D(mesh_plane, 0, 3, 0.0050, 0.0000, -0.0050);
     //transformation.scale3D(__cone, 0, 9, 0.5, 0.5, 0.5);
 
     f->glGenVertexArrays(1, &vao_plane);
