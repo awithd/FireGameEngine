@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="750"
+   height="625"
+   viewBox="0 0 750 625"
+   version="1.1"
+   sodipodi:docname="drawing.svg"
+   id="svg17"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs19" />
+  <sodipodi:namedview
+     pagecolor="#b1b1b1"
+     bordercolor="#2a2a2a"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="true"
+     inkscape:showpageshadow="false"
+     inkscape:document-units="px"
+     showgrid="true"
+     units="px"
+     width="750px"
+     height="1140px"
+     borderlayer="true"
+     inkscape:zoom="0.425"
+     inkscape:cx="164.70588"
+     inkscape:cy="296.47059"
+     inkscape:current-layer="layer1"
+     id="namedview2"
+     inkscape:snap-intersection-paths="true"
+     inkscape:snap-text-baseline="true"
+     inkscape:window-width="1266"
+     inkscape:window-height="720"
+     inkscape:window-x="24"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3677" />
+  </sodipodi:namedview>
+  <g
+     inkscape:label="Background"
+     inkscape:groupmode="layer"
+     sodipodi:insensitive="true"
+     id="bg">
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke-width:1.109;stop-color:#000000"
+       id="rect194"
+       width="750"
+       height="625"
+       x="0"
+       y="0" />
+    <path
+       id="rect194-3"
+       style="fill:#ffffff;fill-opacity:1;stroke-width:1.109;stop-color:#000000"
+       d="m 800,0 v 360 h 54.57812 V 288.34961 H 1705.4219 V 360 H 1760 V 0 Z" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke-width:1.109;stop-color:#000000"
+       id="rect1266"
+       width="700"
+       height="220"
+       x="930"
+       y="400" />
+    <text
+       xml:space="preserve"
+       style="font-size:21.3333px;line-height:1.25;font-family:Aclonica;-inkscape-font-specification:Aclonica;text-align:start;letter-spacing:0px;word-spacing:0px;direction:ltr;text-anchor:start;fill:#ffffff;stroke-width:0.264583"
+       x="929.1377"
+       y="394.02734"
+       id="text7093"><tspan
+         sodipodi:role="line"
+         id="tspan7091"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.3333px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans';text-align:start;direction:ltr;text-anchor:start;fill:#ffffff;stroke-width:0.264583"
+         x="929.1377"
+         y="394.02734">Welcome Screen:</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:21.3333px;line-height:1.25;font-family:Aclonica;-inkscape-font-specification:Aclonica;text-align:start;letter-spacing:0px;word-spacing:0px;direction:ltr;text-anchor:start;fill:#ffffff;stroke-width:0.264583"
+       x="799.47223"
+       y="-8.4173737"
+       id="text7093-6"><tspan
+         sodipodi:role="line"
+         id="tspan7091-7"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.3333px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans';text-align:start;direction:ltr;text-anchor:start;fill:#ffffff;stroke-width:0.264583"
+         x="799.47223"
+         y="-8.4173737">Website Title:</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:21.3333px;line-height:1.25;font-family:Aclonica;-inkscape-font-specification:Aclonica;text-align:start;letter-spacing:0px;word-spacing:0px;direction:ltr;text-anchor:start;fill:#ffffff;stroke-width:0.264583"
+       x="2.7302999"
+       y="-8.8984184"
+       id="text7093-6-5"><tspan
+         sodipodi:role="line"
+         id="tspan7091-7-3"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.3333px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans';text-align:start;direction:ltr;text-anchor:start;fill:#ffffff;stroke-width:0.264583"
+         x="2.7302999"
+         y="-8.8984184">About Screen:</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:21.3333px;line-height:1.25;font-family:Aclonica;-inkscape-font-specification:Aclonica;text-align:start;letter-spacing:0px;word-spacing:0px;direction:ltr;text-anchor:start;fill:#ffffff;stroke-width:0.264583"
+       x="1018.1498"
+       y="-63.358139"
+       id="text7093-6-5-5"><tspan
+         sodipodi:role="line"
+         id="tspan7091-7-3-6"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.3333px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans';text-align:start;direction:ltr;text-anchor:start;fill:#ffffff;stroke-width:0.264583"
+         x="1018.1498"
+         y="-63.358139">Optional formats to consider when making your graphic</tspan></text>
+  </g>
+  <g
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <path
+       d="m 371.77208,80 h 208.89218 c 69.6311,0 69.6311,35.34057 69.6311,70.68094 v 106.02204 c 0,35.34037 0,70.68112 -69.6311,70.68112 h -104.4461 c -104.44608,0 -72.07576,-57.23888 -106.89095,-57.23888 -34.81555,0 2.44381,57.23888 -102.00125,57.23888 H 162.87987 c -69.630898,0 -69.630898,-35.34075 -69.630898,-70.68112 v -70.68129 c 0,-70.68112 0,-106.02169 69.630898,-106.02169 h 208.89221"
+       stroke="#ff0000"
+       stroke-width="28.0618"
+       fill="#000000"
+       id="path2368"
+       style="fill:none;fill-opacity:1;stroke:#0064c8;stroke-opacity:1"
+       sodipodi:nodetypes="csssssssssssc" />
+    <path
+       d="m 650,141.84597 c 37.03172,0 74.06308,0 74.06308,30.87131 0,30.87173 0,30.87173 0,61.74321 0,30.87168 -37.03136,30.87168 -74.06308,30.87168"
+       stroke="#ff0000"
+       stroke-width="27.0492"
+       fill="none"
+       id="path3646"
+       style="stroke:#0064c8;stroke-opacity:1" />
+    <path
+       d="m 93.248972,141.84597 c -34.815193,0 -69.630742,0 -69.630742,30.92309 0,30.9229 0,30.9229 0,61.84598 0,30.92309 34.815549,30.92309 69.630742,30.92309"
+       stroke="#ff0000"
+       stroke-width="26.2493"
+       fill="none"
+       id="path3646-3"
+       style="stroke:#0064c8;stroke-opacity:1" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:141.41px;line-height:1.25;font-family:sans-serif;fill:#0064c8;fill-opacity:1;stroke:none;stroke-width:17.6763"
+       x="20.778126"
+       y="471.64984"
+       id="text14002"
+       transform="scale(0.96255069,1.0389063)"><tspan
+         sodipodi:role="line"
+         id="tspan14000"
+         x="20.778126"
+         y="471.64984"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:141.41px;font-family:Orbitron;-inkscape-font-specification:Orbitron;stroke-width:17.6763;fill:#0064c8;fill-opacity:1">Fire</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:139.917px;line-height:1.25;font-family:Padauk;-inkscape-font-specification:Padauk;fill:#006464;fill-opacity:1;stroke:none;stroke-width:17.4898"
+       x="339.4693"
+       y="461.89743"
+       id="text31382"
+       transform="scale(0.94264779,1.0608416)"><tspan
+         sodipodi:role="line"
+         id="tspan31380"
+         x="339.4693"
+         y="461.89743"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:139.917px;font-family:Orbitron;-inkscape-font-specification:Orbitron;stroke-width:17.4898;fill:#006464;fill-opacity:1">Game</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:48.1042px;line-height:1.25;font-family:sans-serif;fill:#006464;fill-opacity:1;stroke:none;stroke-width:18.0391"
+       x="164.56596"
+       y="525.0174"
+       id="text42036"
+       transform="scale(0.97225447,1.0285373)"><tspan
+         sodipodi:role="line"
+         id="tspan42034"
+         x="164.56596"
+         y="525.0174"
+         style="font-size:48.1042px;fill:#006464;fill-opacity:1;stroke-width:18.0391">Open Source Engine</tspan></text>
+    <circle
+       style="fill:#006464;fill-opacity:1;stroke:#0064c8;stroke-width:40;stroke-dasharray:160, 40;stroke-dashoffset:12;stroke-opacity:1"
+       id="path28225"
+       cx="710"
+       cy="50"
+       r="10" />
+  </g>
+</svg>

@@ -504,6 +504,9 @@ RESOURCES += \
     StyleSheet/style.qrc
 
 DISTFILES += \
+    Logo/large logo.png \
+    Logo/logo.png \
+    Logo/logo.svg \
     Shader/Bone/bone.frag \
     Shader/Bone/bone.vert \
     Shader/EditMode/Black.frag \
